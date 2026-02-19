@@ -786,6 +786,10 @@ function saveCatalogEdits() {
   renderAlerts();
   showTab('order');
 
+  saveCatalogToSheets();
+}
+
+function saveCatalogToSheets() {
   if (USE_ONLINE_INVENTORY) {
     showToast('שומר ב-Sheets...');
     var catalogJson = encodeURIComponent(JSON.stringify(catalog));
@@ -805,7 +809,8 @@ function saveCatalogEdits() {
     scr.onerror = function() { delete window[cbName]; showToast('⚠️ עודכן מקומית'); };
     document.body.appendChild(scr);
   } else {
-    showToast('✅ הקטלוג עודכן!');
+    localStorage.setItem('bakery_catalog', JSON.stringify(catalog));
+    showToast('✅ נשמר!');
   }
 }
 
