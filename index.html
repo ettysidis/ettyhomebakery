@@ -1207,8 +1207,9 @@ function sendEmail() {
   }
   if (invChanged) {
     localStorage.setItem('bakery_inventory', JSON.stringify(inventory));
-    syncInventoryToSheets(); // Sync to Google Sheets
+    renderInventory();
     renderAlerts();
+    syncInventoryToSheets(); // Sync to Google Sheets
   }
 
   // Prepare email body as HTML with embedded RTL
@@ -1291,8 +1292,21 @@ function sendEmail() {
       document.getElementById('order-notes').value = '';
       resetAll();
     }, function(error) {
-      showToast('❌ שגיאה בשליחה - נסי שוב');
       console.error('EmailJS error:', error);
+      // Even if email fails, order was saved to Sheets - complete the flow
+      showToast('✅ ההזמנה נשמרה! (שגיאה בשליחת מייל)');
+      alert('תודה רבה על ההזמנה! 🥐
+
+קיבלנו את פרטי ההזמנה שלך.
+ניצור איתך קשר בהקדם האפשרי.
+
+אתי - אפייה ביתית 💛');
+      document.getElementById('client-name').value = '';
+      document.getElementById('client-phone').value = '';
+      document.getElementById('client-address').value = '';
+      document.getElementById('client-email').value = '';
+      document.getElementById('order-notes').value = '';
+      resetAll();
     });
 }
 
