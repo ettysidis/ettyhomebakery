@@ -1217,8 +1217,6 @@ function sendEmail() {
   
   showToast('שולח הזמנה...');
   
-  emailjs.init(EMAILJS_PUBLIC_KEY);
-  
   var templateParams = {
     to_email: 'etty.sidis@gmail.com',
     subject: 'הזמנה חדשה מ-' + clientName,
@@ -1450,6 +1448,7 @@ function saveAllTexts() {
   localStorage.setItem('bakery_texts', JSON.stringify(data));
 }
 
+emailjs.init(EMAILJS_PUBLIC_KEY);
 loadTexts();
 loadData();
 </script>
