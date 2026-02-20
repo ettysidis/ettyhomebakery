@@ -826,7 +826,7 @@ function init() {
   }
   
 
-  rebuildOrderForm();
+  if (catalog.length > 0) rebuildOrderForm();
   renderAlerts();
   loadLogo();
 }
@@ -1501,6 +1501,7 @@ function saveAllTexts() {
 localStorage.removeItem('bakery_catalog');
 loadTexts();
 loadData();
+init();
 </script>
 </body>
 </html> 
