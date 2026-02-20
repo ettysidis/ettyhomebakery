@@ -422,7 +422,6 @@ function loadCatalogFromSheets() {
     document.body.removeChild(script);
     loadFromSheets();
     rebuildOrderForm();
-    init();
   };
 
   script.src = GOOGLE_SCRIPT_URL + '?action=getCatalog&callback=' + cbName;
@@ -825,24 +824,9 @@ function init() {
     }
   }
   
-  var cc = document.getElementById('cc');
-  for (var ci = 0; ci < catalog.length; ci++) {
-    var c = catalog[ci];
-    var el = document.createElement('div');
-    el.className = 'cat';
-    el.id = 'c' + ci;
-    el.innerHTML = '<div class="cat-hdr"><span>' + c.i + '</span><h2>' + c.n + '</h2></div>';
-    for (var ii = 0; ii < c.items.length; ii++) {
-      var it = c.items[ii];
-      var k = ci + '-' + ii;
-      st[k] = {q:0, p:it.p, name:it.n};
-      el.appendChild(mkRow(k, it.n, it.d, it.u, it.p, false));
-    }
-    // Removed add-row for custom items
-    cc.appendChild(el);
-  }
+
+  rebuildOrderForm();
   renderAlerts();
-  upd();
   loadLogo();
 }
 
