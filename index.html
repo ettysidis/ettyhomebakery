@@ -195,7 +195,7 @@ if ('serviceWorker' in navigator) {
     
     <p style="font-size:.88rem;color:#a0673a;margin-top:10px">בחרי כמויות — הסכום יחושב אוטומטית</p>
     <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;" id="admin-controls">
-      <button onclick="toggleAdmin()" style="background:transparent;border:none;color:rgba(124,63,0,0.25);padding:4px 8px;font-size:.7rem;cursor:pointer" title="מצב מנהלת">🔒</button>
+      <button onclick="toggleAdmin()" style="background:transparent;border:none;color:rgba(124,63,0,0.6);padding:4px 8px;font-size:.85rem;cursor:pointer;border:1px solid rgba(124,63,0,0.3);border-radius:4px" title="מצב מנהלת">🔒 מנהלת</button>
       <button onclick="toggleTestMode()" id="test-mode-btn" style="display:none;background:transparent;border:1px solid rgba(124,63,0,.3);color:#7c3f00;padding:6px 14px;border-radius:20px;font-size:.78rem;cursor:pointer;font-weight:600">🧪 מצב בדיקה: כבוי</button>
     </div>
   </div>
@@ -325,6 +325,10 @@ if ('serviceWorker' in navigator) {
 <div class="toast" id="toast"></div>
 
 <script>
+var inventory = {};
+var st = {};
+var adminMode = false;
+var testMode = false;
 var catalog = [
   {i:"🥙", n:"פוקאצ'ות", items:[
     {n:"פוקאצ'ה גבינה", d:"", u:"ליחידה", p:20},
