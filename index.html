@@ -13,60 +13,60 @@ body { font-family: Arial, 'Arial Hebrew', sans-serif; background: linear-gradie
 .tabs { display: flex; background: #7c3f00; position: sticky; top: 0; z-index: 100; }
 .tab { flex: 1; padding: 12px 4px; text-align: center; color: rgba(255,255,255,0.7); cursor: pointer; font-size: .82rem; border: none; background: none; }
 .tab.active { color: #fff; border-bottom: 3px solid #ffd080; font-weight: bold; }
-.admin-tabs { display: none; background: #5a2d00; }
 .header { text-align: center; padding: 20px 16px 10px; }
-.header img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #e8b87a; margin-bottom: 10px; }
+.logo-area { position: relative; display: inline-block; margin-bottom: 10px; }
+.logo-area img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #e8b87a; display: none; }
+.logo-area .default-icon { font-size: 3rem; }
+.logo-upload-btn { display: none; position: absolute; bottom: 0; left: 0; background: #7c3f00; color: #fff; border: none; border-radius: 50%; width: 26px; height: 26px; font-size: .7rem; cursor: pointer; }
 .header h1 { font-size: 1.5rem; color: #7c3f00; }
 .header p { color: #a0673a; font-size: .9rem; }
+.editable { cursor: text; border-bottom: 1px dashed transparent; transition: border-color .2s; }
+.editable:hover { border-bottom-color: #c8813a; }
+.editable:focus { outline: none; border-bottom-color: #7c3f00; }
 .about-box { background: #fff8ee; border-radius: 12px; padding: 14px; margin: 0 0 14px; font-size: .88rem; line-height: 1.6; border: 1px solid #f0d9b5; }
 .subtitle { text-align: center; color: #a0673a; font-size: .82rem; margin: 8px 0; }
 .cat { background: #fff; border-radius: 16px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
 .cat-hdr { background: linear-gradient(90deg, #f9e4c0, #fdf6ec); padding: 11px 18px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0d9b5; }
 .cat-hdr h2 { font-size: .95rem; font-weight: 700; color: #7c3f00; }
-.row { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 8px; padding: 11px 18px; border-bottom: 1px solid #fdf0e0; }
+.row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px; padding: 11px 18px; border-bottom: 1px solid #fdf0e0; }
 .row:last-child { border-bottom: none; }
 .iname { font-weight: 600; font-size: .9rem; }
-.idesc { font-size: .75rem; color: #a0673a; }
-.price { color: #7c3f00; font-weight: 700; font-size: .9rem; min-width: 45px; text-align: center; }
+.idesc { font-size: .75rem; color: #a0673a; margin-top: 2px; }
+.price { color: #7c3f00; font-weight: 700; font-size: .88rem; min-width: 45px; text-align: left; }
 .qty-box { display: flex; align-items: center; gap: 6px; }
 .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #e8b87a; background: #fff; color: #7c3f00; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-.qty-btn:active { background: #f9e4c0; }
-.qty-num { min-width: 24px; text-align: center; font-weight: 700; }
-.out-of-stock { color: #dc3545; font-size: .75rem; }
+.qty-num { min-width: 22px; text-align: center; font-weight: 700; }
+.out-badge { color: #dc3545; font-size: .72rem; font-weight: 600; }
 .section { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
 .section h3 { font-size: .9rem; color: #7c3f00; margin-bottom: 12px; border-bottom: 1px solid #f0d9b5; padding-bottom: 8px; }
-input, textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #e8c99a; border-radius: 10px; font-size: .9rem; font-family: inherit; direction: rtl; margin-bottom: 8px; }
+input, textarea, select { width: 100%; padding: 10px 14px; border: 1.5px solid #e8c99a; border-radius: 10px; font-size: .9rem; font-family: inherit; direction: rtl; margin-bottom: 8px; background: #fff; }
 input:focus, textarea:focus { outline: none; border-color: #c8813a; }
 textarea { min-height: 80px; resize: vertical; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .total-bar { background: #7c3f00; color: #fff; border-radius: 16px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .total-label { font-size: .9rem; opacity: .85; }
 .total-amount { font-size: 1.4rem; font-weight: 700; }
 .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
 .btn-primary { background: #7c3f00; color: #fff; }
 .btn-secondary { background: #f0d9b5; color: #7c3f00; }
-.btn:active { opacity: .85; }
+.important-notes { background: #fff8ee; border: 1px solid #f0d9b5; border-radius: 12px; padding: 14px; margin-bottom: 14px; font-size: .85rem; line-height: 1.7; }
+.important-notes h4 { color: #7c3f00; margin-bottom: 8px; font-size: .9rem; }
 .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 22px; border-radius: 20px; font-size: .88rem; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.on { opacity: 1; }
 .admin-btn { background: transparent; border: 1px solid rgba(124,63,0,0.3); color: rgba(124,63,0,0.6); padding: 5px 12px; border-radius: 8px; font-size: .8rem; cursor: pointer; margin: 8px auto; display: block; }
-
 /* Inventory */
-.inv-item { display: grid; grid-template-columns: 1fr auto auto auto auto; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f0d9b5; }
+.inv-item { display: grid; grid-template-columns: 1fr 60px 60px; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f0d9b5; }
 .inv-item:last-child { border-bottom: none; }
-.inv-input { width: 60px; padding: 6px; text-align: center; margin-bottom: 0; }
-.stock-low { color: #dc3545; font-size: .75rem; }
-.save-inv-btn { background: #7c3f00; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-family: inherit; font-size: .85rem; margin-top: 12px; width: 100%; }
-
+.inv-label { font-size: .78rem; color: #a0673a; margin-bottom: 2px; }
+.inv-input { width: 100%; padding: 6px; text-align: center; margin-bottom: 0; font-size: .88rem; }
+.stock-low { color: #dc3545; font-size: .72rem; }
 /* Products edit */
-.prod-item { background: #fffbf5; border: 1px solid #f0d9b5; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
-.prod-row { display: grid; grid-template-columns: 1fr 80px 80px auto; gap: 8px; align-items: center; }
-.prod-row input { margin-bottom: 0; }
-.del-btn { background: #dc3545; color: #fff; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: .8rem; }
-.add-prod-row { display: grid; grid-template-columns: 1fr 80px 80px; gap: 8px; margin-top: 10px; }
-.add-btn { background: #28a745; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-family: inherit; font-size: .85rem; width: 100%; margin-top: 8px; }
 .cat-section { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 6px rgba(0,0,0,.06); }
-.cat-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.cat-title-row h3 { color: #7c3f00; font-size: .95rem; }
-
+.cat-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.prod-item { background: #fffbf5; border: 1px solid #f0d9b5; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+.del-btn { background: #dc3545; color: #fff; border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: .8rem; white-space: nowrap; }
+.save-btn { background: #7c3f00; color: #fff; border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: .88rem; width: 100%; margin-top: 10px; }
+.add-btn { background: #28a745; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-family: inherit; font-size: .85rem; width: 100%; margin-top: 8px; }
 /* History */
 .order-item { background: #fffbf5; border: 1px solid #f0d9b5; border-radius: 10px; padding: 12px; margin-bottom: 10px; font-size: .85rem; }
 .order-date { color: #a0673a; font-size: .78rem; margin-bottom: 4px; }
@@ -77,27 +77,31 @@ textarea { min-height: 80px; resize: vertical; }
 
 <div class="tabs" id="main-tabs">
   <button class="tab active" onclick="showTab('order')">🛒 הזמנה</button>
-  <button class="tab" onclick="showTab('inventory')" id="tab-inventory" style="display:none">📦 מלאי</button>
-  <button class="tab" onclick="showTab('products')" id="tab-products" style="display:none">✏️ מוצרים</button>
-  <button class="tab" onclick="showTab('history')" id="tab-history" style="display:none">📋 הזמנות</button>
+  <button class="tab" onclick="showTab('inventory')" id="tab-inv" style="display:none">📦 מלאי</button>
+  <button class="tab" onclick="showTab('products')" id="tab-prod" style="display:none">✏️ מוצרים</button>
+  <button class="tab" onclick="showTab('history')" id="tab-hist" style="display:none">📋 הזמנות</button>
 </div>
 
 <!-- ORDER PAGE -->
 <div class="page active" id="page-order">
   <div class="header">
-    <img id="logo-img" src="" style="display:none">
-    <div id="default-icon" style="font-size:3rem;margin-bottom:8px">🥐</div>
-    <h1 id="title-text">אתי - אפייה ביתית</h1>
-    <p id="subtitle-text">מאפים ולחמים טריים מהתנור</p>
+    <div class="logo-area" id="logo-area">
+      <img id="logo-img" alt="לוגו">
+      <div class="default-icon" id="default-icon">🥐</div>
+      <button class="logo-upload-btn" id="logo-upload-btn" onclick="document.getElementById('logo-file').click()" title="החלף לוגו">📷</button>
+      <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="uploadLogo(this)">
+    </div>
+    <h1><span class="editable" id="title-text" contenteditable="false">אתי - אפייה ביתית</span></h1>
+    <p><span class="editable" id="subtitle-text" contenteditable="false">מאפים ולחמים טריים מהתנור</span></p>
   </div>
 
-  <div class="about-box" id="about-box">
-    <span id="about-text">שלום! אני אתי, מכינה מאפים ולחמים טריים בהכנה ביתית עם חומרי גלם איכותיים. כל המוצרים נאפים בהזמנה מראש. אשמח לספק לכם מוצרים איכותיים ומפנקים! 🧡</span>
+  <div class="about-box">
+    <span class="editable" id="about-text" contenteditable="false">שלום! אני אתי, מכינה מאפים ולחמים טריים בהכנה ביתית עם חומרי גלם איכותיים. כל המוצרים נאפים בהזמנה מראש. אשמח לספק לכם מוצרים איכותיים ומפנקים! 🧡</span>
   </div>
 
   <p class="subtitle">בחרי כמויות — הסכום יחושב אוטומטית</p>
 
-  <button class="admin-btn" onclick="toggleAdmin()">🔒 מנהלת</button>
+  <button class="admin-btn" id="admin-btn" onclick="toggleAdmin()">🔒 מנהלת</button>
 
   <div id="cc"></div>
 
@@ -108,9 +112,9 @@ textarea { min-height: 80px; resize: vertical; }
 
   <div class="section">
     <h3>👤 פרטי לקוח</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div class="two-col">
       <input type="text" id="client-name" placeholder="שם מלא*">
-      <input type="tel" id="client-phone" placeholder="טלפון* (050-1234567)">
+      <input type="tel" id="client-phone" placeholder="טלפון* (050-...)">
     </div>
     <input type="text" id="client-address" placeholder="כתובת למשלוח*">
     <input type="email" id="client-email" placeholder="אימייל (אופציונלי)">
@@ -119,6 +123,13 @@ textarea { min-height: 80px; resize: vertical; }
   <div class="total-bar">
     <span class="total-label">סה"כ להזמנה</span>
     <span class="total-amount" id="total-display">₪0.00</span>
+  </div>
+
+  <div class="important-notes" id="important-notes">
+    <h4>📌 הערות חשובות</h4>
+    <div class="editable" id="notes-text" contenteditable="false">• ההזמנות מתבצעות מראש בלבד
+• משלוח באזור מגורים
+• לשאלות ניתן לפנות בוואטסאפ</div>
   </div>
 
   <button class="btn btn-secondary" onclick="resetOrder()">🗑️ אפס הזמנה</button>
@@ -131,7 +142,7 @@ textarea { min-height: 80px; resize: vertical; }
     <div class="section">
       <h3>📦 ניהול מלאי</h3>
       <div id="inv-grid"></div>
-      <button class="save-inv-btn" onclick="saveInventory()">💾 שמור מלאי</button>
+      <button class="save-btn" onclick="saveInventory()">💾 שמור מלאי</button>
     </div>
   </div>
 </div>
@@ -140,7 +151,7 @@ textarea { min-height: 80px; resize: vertical; }
 <div class="page" id="page-products">
   <div style="padding-top:16px">
     <div id="products-grid"></div>
-    <button class="btn btn-primary" onclick="addCategory()" style="margin-top:8px">➕ הוסיפי קטגוריה חדשה</button>
+    <button class="btn btn-primary" onclick="addCategory()">➕ הוסיפי קטגוריה חדשה</button>
   </div>
 </div>
 
@@ -149,7 +160,7 @@ textarea { min-height: 80px; resize: vertical; }
   <div style="padding-top:16px">
     <div class="section">
       <h3>📋 הזמנות אחרונות</h3>
-      <div id="history-list"><p style="color:#a0673a;font-size:.85rem">טוען הזמנות...</p></div>
+      <div id="history-list"><p style="color:#a0673a;font-size:.85rem">טוען...</p></div>
     </div>
   </div>
 </div>
@@ -158,7 +169,7 @@ textarea { min-height: 80px; resize: vertical; }
 
 <script>
 // =====================================================
-// CONFIGURATION
+// CONFIG
 // =====================================================
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
@@ -174,21 +185,21 @@ var quantities = {};
 
 var catalog = [
   {i:"🥙", n:"פוקאצ'ות", items:[
-    {n:"פוקאצ'ה גבינה", d:"", u:"ליחידה", p:20},
-    {n:"פוקאצ'ה רוזמרין", d:"", u:"ליחידה", p:16},
-    {n:"פוקאצ'ה זעתר", d:"", u:"ליחידה", p:16}
+    {n:"פוקאצ'ה גבינה", d:"גבינה צהובה ועשבי תיבול", u:"ליחידה", p:20},
+    {n:"פוקאצ'ה רוזמרין", d:"שמן זית ורוזמרין טרי", u:"ליחידה", p:16},
+    {n:"פוקאצ'ה זעתר", d:"תערובת זעתר ביתית", u:"ליחידה", p:16}
   ]},
   {i:"🧀", n:"מקלות", items:[
-    {n:"מקל גבינה גאודה", d:"", u:"ליחידה", p:16}
+    {n:"מקל גבינה גאודה", d:"בצק שמרים פריך עם גאודה", u:"ליחידה", p:16}
   ]},
   {i:"🍫", n:"קראנץ'", items:[
-    {n:"קראנץ' שוקולד", d:"", u:"ליחידה", p:60},
-    {n:"קראנץ' קינמון", d:"", u:"ליחידה", p:60}
+    {n:"קראנץ' שוקולד", d:"שוקולד בלגי איכותי", u:"ליחידה", p:60},
+    {n:"קראנץ' קינמון", d:"קינמון וסוכר חום", u:"ליחידה", p:60}
   ]},
   {i:"🎂", n:"עוגות", items:[
-    {n:"עוגת תפוחים", d:"", u:"ליחידה", p:50},
-    {n:"עוגת אוכמניות", d:"", u:"ליחידה", p:50},
-    {n:"אוזני המן", d:"", u:"ליחידה", p:45}
+    {n:"עוגת תפוחים", d:"תפוחים וקינמון, לחה ועסיסית", u:"ליחידה", p:50},
+    {n:"עוגת אוכמניות", d:"אוכמניות טריות", u:"ליחידה", p:50},
+    {n:"אוזני המן", d:"במגוון מילויים", u:"ליחידה", p:45}
   ]}
 ];
 
@@ -198,7 +209,6 @@ var catalog = [
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
-  // Init quantities
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
@@ -206,10 +216,37 @@ function init() {
       if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
     }
   }
+  loadTexts();
+  loadLogo();
   buildOrderForm();
   loadInventoryFromSheets();
-  loadLogo();
-  loadTexts();
+  loadCatalogFromSheets();
+}
+
+// =====================================================
+// LOAD CATALOG FROM SHEETS
+// =====================================================
+function loadCatalogFromSheets() {
+  var scr = document.createElement('script');
+  var cb = 'cb_cat_load_' + Date.now();
+  window[cb] = function(r) {
+    delete window[cb];
+    if (document.body.contains(scr)) document.body.removeChild(scr);
+    if (r && r.success && r.data && r.data.length > 0) {
+      catalog = r.data;
+      // Re-init quantities for new catalog
+      quantities = {};
+      for (var ci = 0; ci < catalog.length; ci++) {
+        for (var ii = 0; ii < catalog[ci].items.length; ii++) {
+          quantities[ci + '-' + ii] = 0;
+        }
+      }
+      buildOrderForm();
+    }
+  };
+  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+  scr.src = GOOGLE_SCRIPT_URL + '?action=getCatalog&callback=' + cb;
+  document.body.appendChild(scr);
 }
 
 // =====================================================
@@ -217,6 +254,7 @@ function init() {
 // =====================================================
 function buildOrderForm() {
   var cc = document.getElementById('cc');
+  if (!cc) return;
   cc.innerHTML = '';
   for (var ci = 0; ci < catalog.length; ci++) {
     var cat = catalog[ci];
@@ -224,16 +262,16 @@ function buildOrderForm() {
     catEl.className = 'cat';
     catEl.innerHTML = '<div class="cat-hdr"><span style="font-size:1.3rem">' + cat.i + '</span><h2>' + cat.n + '</h2></div>';
     for (var ii = 0; ii < cat.items.length; ii++) {
-      var item = cat.items[ii];
-      var k = ci + '-' + ii;
-      catEl.appendChild(buildRow(k, item, ci, ii));
+      catEl.appendChild(buildRow(ci, ii));
     }
     cc.appendChild(catEl);
   }
   updateTotal();
 }
 
-function buildRow(k, item, ci, ii) {
+function buildRow(ci, ii) {
+  var k = ci + '-' + ii;
+  var item = catalog[ci].items[ii];
   var inv = inventory[k] || {stock: 50, minStock: 5};
   var outOfStock = inv.stock <= 0;
   var r = document.createElement('div');
@@ -241,14 +279,14 @@ function buildRow(k, item, ci, ii) {
   r.id = 'row-' + k;
   r.innerHTML =
     '<div>' +
-      '<div class="iname">' + item.n + (outOfStock ? ' <span class="out-of-stock">אזל</span>' : '') + '</div>' +
+      '<div class="iname">' + item.n + (outOfStock ? ' <span class="out-badge">אזל המלאי</span>' : '') + '</div>' +
       (item.d ? '<div class="idesc">' + item.d + '</div>' : '') +
     '</div>' +
-    '<div class="price">₪' + item.p + '</div>' +
+    '<div class="price">₪' + item.p + '<br><small style="font-weight:400;font-size:.7rem;color:#a0673a">' + (item.u || 'ליחידה') + '</small></div>' +
     '<div class="qty-box">' +
-      '<button class="qty-btn" onclick="changeQty(\'' + k + '\',-1)" ' + (outOfStock ? 'disabled' : '') + '>−</button>' +
+      '<button class="qty-btn" onclick="changeQty(\'' + k + '\',-1)"' + (outOfStock ? ' disabled' : '') + '>−</button>' +
       '<span class="qty-num" id="qty-' + k + '">' + (quantities[k] || 0) + '</span>' +
-      '<button class="qty-btn" onclick="changeQty(\'' + k + '\',1)" ' + (outOfStock ? 'disabled' : '') + '>+</button>' +
+      '<button class="qty-btn" onclick="changeQty(\'' + k + '\',1)"' + (outOfStock ? ' disabled' : '') + '>+</button>' +
     '</div>';
   return r;
 }
@@ -256,13 +294,14 @@ function buildRow(k, item, ci, ii) {
 function changeQty(k, delta) {
   var parts = k.split('-');
   var ci = parseInt(parts[0]), ii = parseInt(parts[1]);
-  var item = catalog[ci].items[ii];
+  if (!catalog[ci] || !catalog[ci].items[ii]) return;
   var inv = inventory[k] || {stock: 50};
   var cur = quantities[k] || 0;
   var newVal = Math.max(0, cur + delta);
   if (delta > 0 && newVal > inv.stock) { showToast('אין מספיק במלאי'); return; }
   quantities[k] = newVal;
-  document.getElementById('qty-' + k).textContent = newVal;
+  var el = document.getElementById('qty-' + k);
+  if (el) el.textContent = newVal;
   updateTotal();
 }
 
@@ -272,10 +311,11 @@ function updateTotal() {
     var parts = k.split('-');
     var ci = parseInt(parts[0]), ii = parseInt(parts[1]);
     if (catalog[ci] && catalog[ci].items[ii]) {
-      total += quantities[k] * catalog[ci].items[ii].p;
+      total += (quantities[k] || 0) * catalog[ci].items[ii].p;
     }
   }
-  document.getElementById('total-display').textContent = '₪' + total.toFixed(2);
+  var el = document.getElementById('total-display');
+  if (el) el.textContent = '₪' + total.toFixed(2);
 }
 
 function resetOrder() {
@@ -295,64 +335,73 @@ function submitOrder() {
 
   if (!name || !phone || !address) { showToast('נא למלא שם, טלפון וכתובת'); return; }
 
-  var items = [];
-  var total = 0;
+  var items = [], total = 0;
   for (var k in quantities) {
-    if (quantities[k] > 0) {
+    if ((quantities[k] || 0) > 0) {
       var parts = k.split('-');
       var ci = parseInt(parts[0]), ii = parseInt(parts[1]);
-      var item = catalog[ci].items[ii];
-      items.push(item.n + ' × ' + quantities[k] + ' = ₪' + (item.p * quantities[k]));
-      total += quantities[k] * item.p;
+      if (catalog[ci] && catalog[ci].items[ii]) {
+        var item = catalog[ci].items[ii];
+        var lineTotal = item.p * quantities[k];
+        items.push(item.n + ' x' + quantities[k] + ' = ₪' + lineTotal);
+        total += lineTotal;
+      }
     }
   }
   if (items.length === 0) { showToast('לא נבחרו פריטים'); return; }
 
   var date = new Date().toLocaleString('he-IL');
   var itemsText = items.join('\n');
+  var orderDetails = 'הזמנה מ: ' + name + '\nטלפון: ' + phone + '\nכתובת: ' + address +
+    (email ? '\nאימייל: ' + email : '') + '\n\nמוצרים:\n' + itemsText +
+    '\n\nסה"כ: ₪' + total.toFixed(2) + (notes ? '\n\nהערות: ' + notes : '') + '\n\nתאריך: ' + date;
 
   showToast('שולח הזמנה...');
 
-  // Update inventory
+  // Update inventory locally
   for (var k in quantities) {
-    if (quantities[k] > 0) {
+    if ((quantities[k] || 0) > 0) {
       if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
       inventory[k].stock = Math.max(0, inventory[k].stock - quantities[k]);
     }
   }
-  saveInventoryToSheets();
 
   // Save to Sheets
-  saveOrderToSheets({date: date, clientName: name, clientPhone: phone, clientAddress: address, clientEmail: email, items: itemsText, total: '₪' + total.toFixed(2), notes: notes});
+  saveOrderToSheets({date:date, clientName:name, clientPhone:phone, clientAddress:address, clientEmail:email, items:itemsText, total:'₪'+total.toFixed(2), notes:notes});
+  saveInventoryToSheets();
 
   // Send email
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
     subject: 'הזמנה חדשה מ-' + name,
-    order_details: itemsText + '\n\nסה"כ: ₪' + total.toFixed(2) + '\nטלפון: ' + phone + '\nכתובת: ' + address + (notes ? '\nהערות: ' + notes : ''),
+    order_details: orderDetails,
     client_name: name,
     client_phone: phone,
     client_address: address,
     order_total: '₪' + total.toFixed(2),
     order_date: date
   }).then(function() {
-    showToast('ההזמנה נשלחה בהצלחה! ✅');
-    alert('תודה רבה על ההזמנה!\n\nקיבלנו את פרטי ההזמנה שלך.\nניצור איתך קשר בהקדם.\n\nאתי - אפייה ביתית');
-    document.getElementById('client-name').value = '';
-    document.getElementById('client-phone').value = '';
-    document.getElementById('client-address').value = '';
-    document.getElementById('client-email').value = '';
-    document.getElementById('order-notes').value = '';
+    showToast('ההזמנה נשלחה! ✅');
+    alert('תודה רבה ' + name + '!\n\nקיבלנו את ההזמנה שלך ✅\nניצור איתך קשר בהקדם האפשרי.\n\nאתי - אפייה ביתית 🧡');
+    clearForm();
     resetOrder();
   }, function(err) {
     console.error('Email error:', err);
-    showToast('ההזמנה נשמרה (בעיה בשליחת מייל)');
-    alert('תודה! ההזמנה התקבלה.\nניצור איתך קשר בהקדם.');
+    showToast('ההזמנה נשמרה ✅');
+    alert('תודה ' + name + '!\nההזמנה התקבלה.\nניצור איתך קשר בהקדם.');
+    clearForm();
     resetOrder();
   });
 }
 
+function clearForm() {
+  ['client-name','client-phone','client-address','client-email','order-notes'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
 // =====================================================
-// GOOGLE SHEETS
+// SHEETS FUNCTIONS
 // =====================================================
 function loadInventoryFromSheets() {
   var scr = document.createElement('script');
@@ -370,20 +419,20 @@ function loadInventoryFromSheets() {
   document.body.appendChild(scr);
 }
 
-function saveOrderToSheets(order) {
+function saveOrderToSheets(o) {
   var scr = document.createElement('script');
-  var cb = 'cb_order_' + Date.now();
+  var cb = 'cb_so_' + Date.now();
   window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
   scr.src = GOOGLE_SCRIPT_URL + '?action=saveOrder&callback=' + cb +
-    '&date=' + encodeURIComponent(order.date) +
-    '&clientName=' + encodeURIComponent(order.clientName) +
-    '&clientPhone=' + encodeURIComponent(order.clientPhone) +
-    '&clientAddress=' + encodeURIComponent(order.clientAddress) +
-    '&clientEmail=' + encodeURIComponent(order.clientEmail || '') +
-    '&items=' + encodeURIComponent(order.items) +
-    '&total=' + encodeURIComponent(order.total) +
-    '&notes=' + encodeURIComponent(order.notes || '');
+    '&date=' + encodeURIComponent(o.date) +
+    '&clientName=' + encodeURIComponent(o.clientName) +
+    '&clientPhone=' + encodeURIComponent(o.clientPhone) +
+    '&clientAddress=' + encodeURIComponent(o.clientAddress) +
+    '&clientEmail=' + encodeURIComponent(o.clientEmail||'') +
+    '&items=' + encodeURIComponent(o.items) +
+    '&total=' + encodeURIComponent(o.total) +
+    '&notes=' + encodeURIComponent(o.notes||'');
   document.body.appendChild(scr);
 }
 
@@ -391,45 +440,56 @@ function saveInventoryToSheets() {
   var keys = Object.keys(inventory);
   var i = 0;
   function next() {
-    if (i >= keys.length) { renderInventory(); return; }
+    if (i >= keys.length) { return; }
     var k = keys[i++];
     var parts = k.split('-');
     var ci = parseInt(parts[0]), ii = parseInt(parts[1]);
     if (!catalog[ci] || !catalog[ci].items[ii]) { next(); return; }
-    var name = catalog[ci].items[ii].n;
     var inv = inventory[k];
     var scr = document.createElement('script');
-    var cb = 'cb_sinv_' + Date.now() + '_' + i;
+    var cb = 'cb_si_' + Date.now() + '_' + i;
     window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); next(); };
     scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); next(); };
     scr.src = GOOGLE_SCRIPT_URL + '?action=updateInventory&callback=' + cb +
       '&productId=' + encodeURIComponent(k) +
-      '&name=' + encodeURIComponent(name) +
-      '&stock=' + (inv.stock || 0) +
-      '&minStock=' + (inv.minStock || 5) +
-      '&ordered=' + (inv.ordered || 0);
+      '&name=' + encodeURIComponent(catalog[ci].items[ii].n) +
+      '&stock=' + (inv.stock||0) + '&minStock=' + (inv.minStock||5) + '&ordered=' + (inv.ordered||0);
     document.body.appendChild(scr);
   }
   next();
+}
+
+function saveCatalogToSheets() {
+  var scr = document.createElement('script');
+  var cb = 'cb_sc_' + Date.now();
+  window[cb] = function(r) {
+    delete window[cb];
+    if (document.body.contains(scr)) document.body.removeChild(scr);
+    showToast(r && r.success ? 'הקטלוג נשמר ✅' : 'שמירה מקומית בלבד');
+  };
+  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); showToast('שגיאה בשמירה'); };
+  scr.src = GOOGLE_SCRIPT_URL + '?action=saveCatalog&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(catalog));
+  document.body.appendChild(scr);
 }
 
 function loadOrdersFromSheets() {
   var list = document.getElementById('history-list');
   list.innerHTML = '<p style="color:#a0673a;font-size:.85rem">טוען...</p>';
   var scr = document.createElement('script');
-  var cb = 'cb_orders_' + Date.now();
+  var cb = 'cb_ord_' + Date.now();
   window[cb] = function(r) {
     delete window[cb];
     if (document.body.contains(scr)) document.body.removeChild(scr);
+    list.innerHTML = '';
     if (r && r.success && r.data && r.data.length > 0) {
-      list.innerHTML = '';
       r.data.forEach(function(o) {
         var div = document.createElement('div');
         div.className = 'order-item';
         div.innerHTML = '<div class="order-date">' + o.date + '</div>' +
           '<div class="order-name">' + o.clientName + ' | ' + o.clientPhone + '</div>' +
-          '<div style="font-size:.82rem;color:#666;white-space:pre-line">' + o.items + '</div>' +
-          '<div style="font-weight:700;color:#7c3f00;margin-top:4px">' + o.total + '</div>';
+          '<div style="font-size:.82rem;color:#555;white-space:pre-line;margin:4px 0">' + o.items + '</div>' +
+          '<div style="font-weight:700;color:#7c3f00">' + o.total + '</div>' +
+          (o.notes ? '<div style="font-size:.78rem;color:#a0673a;margin-top:4px">הערה: ' + o.notes + '</div>' : '');
         list.appendChild(div);
       });
     } else {
@@ -449,15 +509,31 @@ function toggleAdmin() {
     var pass = prompt('סיסמה:');
     if (pass !== 'etty2025') { showToast('סיסמה שגויה'); return; }
     adminMode = true;
-    document.getElementById('tab-inventory').style.display = '';
-    document.getElementById('tab-products').style.display = '';
-    document.getElementById('tab-history').style.display = '';
+    document.getElementById('tab-inv').style.display = '';
+    document.getElementById('tab-prod').style.display = '';
+    document.getElementById('tab-hist').style.display = '';
+    document.getElementById('logo-upload-btn').style.display = 'flex';
+    // Enable editing
+    ['title-text','subtitle-text','about-text','notes-text'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.contentEditable = 'true'; el.style.background = 'rgba(255,200,0,0.08)'; }
+    });
+    document.getElementById('admin-btn').textContent = '🔓 מנהלת פעיל';
+    document.getElementById('admin-btn').style.background = '#fff0cc';
     showToast('מצב מנהלת פעיל ✅');
   } else {
     adminMode = false;
-    document.getElementById('tab-inventory').style.display = 'none';
-    document.getElementById('tab-products').style.display = 'none';
-    document.getElementById('tab-history').style.display = 'none';
+    document.getElementById('tab-inv').style.display = 'none';
+    document.getElementById('tab-prod').style.display = 'none';
+    document.getElementById('tab-hist').style.display = 'none';
+    document.getElementById('logo-upload-btn').style.display = 'none';
+    ['title-text','subtitle-text','about-text','notes-text'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.contentEditable = 'false'; el.style.background = ''; }
+    });
+    saveTexts();
+    document.getElementById('admin-btn').textContent = '🔒 מנהלת';
+    document.getElementById('admin-btn').style.background = '';
     showTab('order');
     showToast('יצאת ממצב מנהלת');
   }
@@ -470,13 +546,17 @@ function showTab(name) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
   document.getElementById('page-' + name).classList.add('active');
-  if (name === 'inventory') { renderInventory(); }
-  if (name === 'products') { renderProducts(); }
-  if (name === 'history') { loadOrdersFromSheets(); }
+  var tabs = {'order':0,'inventory':1,'products':2,'history':3};
+  var allTabs = document.querySelectorAll('.tab');
+  // Find matching tab
+  var tabMap = {'order':'tab-order','inventory':'tab-inv','products':'tab-prod','history':'tab-hist'};
+  if (name === 'inventory') renderInventory();
+  if (name === 'products') renderProducts();
+  if (name === 'history') loadOrdersFromSheets();
 }
 
 // =====================================================
-// INVENTORY MANAGEMENT
+// INVENTORY
 // =====================================================
 function renderInventory() {
   var grid = document.getElementById('inv-grid');
@@ -484,21 +564,20 @@ function renderInventory() {
   for (var ci = 0; ci < catalog.length; ci++) {
     var cat = catalog[ci];
     var hdr = document.createElement('div');
-    hdr.style.cssText = 'font-weight:700;color:#7c3f00;padding:8px 0 4px;border-bottom:2px solid #f0d9b5;margin-bottom:8px;margin-top:' + (ci > 0 ? '16px' : '0');
+    hdr.style.cssText = 'font-weight:700;color:#7c3f00;padding:10px 0 6px;' + (ci > 0 ? 'margin-top:14px;' : '') + 'border-bottom:2px solid #f0d9b5;margin-bottom:8px;';
     hdr.textContent = cat.i + ' ' + cat.n;
     grid.appendChild(hdr);
     for (var ii = 0; ii < cat.items.length; ii++) {
       var k = ci + '-' + ii;
-      var inv = inventory[k] || {stock: 50, minStock: 5};
-      var item = cat.items[ii];
+      var inv = inventory[k] || {stock:50, minStock:5};
       var row = document.createElement('div');
       row.className = 'inv-item';
       row.innerHTML =
-        '<div>' + item.n + (inv.stock <= inv.minStock ? ' <span class="stock-low">⚠️ מלאי נמוך</span>' : '') + '</div>' +
-        '<div style="font-size:.78rem;color:#a0673a">מלאי:</div>' +
-        '<input type="number" class="inv-input" id="inv-' + k + '" value="' + inv.stock + '" min="0">' +
-        '<div style="font-size:.78rem;color:#a0673a">מינ\':</div>' +
-        '<input type="number" class="inv-input" id="min-' + k + '" value="' + (inv.minStock || 5) + '" min="0">';
+        '<div>' + cat.items[ii].n +
+          (inv.stock <= (inv.minStock||5) ? ' <span class="stock-low">⚠️ נמוך</span>' : '') +
+        '</div>' +
+        '<div><div class="inv-label">מלאי</div><input type="number" class="inv-input" id="inv-' + k + '" value="' + (inv.stock||0) + '" min="0"></div>' +
+        '<div><div class="inv-label">מינימום</div><input type="number" class="inv-input" id="min-' + k + '" value="' + (inv.minStock||5) + '" min="0"></div>';
       grid.appendChild(row);
     }
   }
@@ -508,18 +587,19 @@ function saveInventory() {
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
-      var stockEl = document.getElementById('inv-' + k);
-      var minEl = document.getElementById('min-' + k);
-      if (stockEl) {
+      var sEl = document.getElementById('inv-' + k);
+      var mEl = document.getElementById('min-' + k);
+      if (sEl) {
         if (!inventory[k]) inventory[k] = {};
-        inventory[k].stock = parseInt(stockEl.value) || 0;
-        inventory[k].minStock = parseInt(minEl.value) || 5;
+        inventory[k].stock = parseInt(sEl.value) || 0;
+        inventory[k].minStock = parseInt(mEl.value) || 5;
       }
     }
   }
   showToast('שומר מלאי...');
   saveInventoryToSheets();
   buildOrderForm();
+  showToast('המלאי נשמר ✅');
 }
 
 // =====================================================
@@ -537,28 +617,39 @@ function buildCatSection(ci) {
   var cat = catalog[ci];
   var sec = document.createElement('div');
   sec.className = 'cat-section';
-  sec.id = 'cat-sec-' + ci;
-  var ciCopy = ci;
 
+  // Header
   var hdr = document.createElement('div');
   hdr.className = 'cat-title-row';
   hdr.innerHTML =
-    '<h3><input type="text" id="cat-emoji-' + ci + '" value="' + cat.i + '" style="width:50px;margin:0;padding:4px;text-align:center"> ' +
-    '<input type="text" id="cat-name-' + ci + '" value="' + cat.n + '" style="width:140px;margin:0;padding:4px"></h3>' +
-    '<button class="del-btn" onclick="deleteCategory(' + ci + ')">🗑️ מחק קטגוריה</button>';
+    '<input type="text" id="cat-e-' + ci + '" value="' + cat.i + '" style="width:52px;margin:0;padding:5px;text-align:center" placeholder="😀">' +
+    '<input type="text" id="cat-n-' + ci + '" value="' + cat.n + '" style="flex:1;margin:0;padding:5px" placeholder="שם קטגוריה">' +
+    '<button class="del-btn" onclick="deleteCategory(' + ci + ')">🗑️ מחק</button>';
   sec.appendChild(hdr);
 
+  // Items
   for (var ii = 0; ii < cat.items.length; ii++) {
-    sec.appendChild(buildProdRow(ci, ii));
+    var item = cat.items[ii];
+    var row = document.createElement('div');
+    row.className = 'prod-item';
+    row.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 70px 80px auto;gap:6px;align-items:center">' +
+      '<input type="text" id="pn-' + ci + '-' + ii + '" value="' + item.n + '" placeholder="שם" style="margin:0;padding:6px">' +
+      '<input type="number" id="pp-' + ci + '-' + ii + '" value="' + item.p + '" placeholder="₪" style="margin:0;padding:6px">' +
+      '<input type="text" id="pd-' + ci + '-' + ii + '" value="' + (item.d||'') + '" placeholder="תיאור" style="margin:0;padding:6px">' +
+      '<button class="del-btn" onclick="deleteProduct(' + ci + ',' + ii + ')">✕</button>' +
+      '</div>';
+    sec.appendChild(row);
   }
 
-  var addRow = document.createElement('div');
-  addRow.className = 'add-prod-row';
-  addRow.innerHTML =
-    '<input type="text" id="new-name-' + ci + '" placeholder="שם מוצר חדש">' +
-    '<input type="number" id="new-price-' + ci + '" placeholder="מחיר">' +
-    '<input type="text" id="new-unit-' + ci + '" placeholder="יחידה" value="ליחידה">';
-  sec.appendChild(addRow);
+  // Add new product row
+  var addArea = document.createElement('div');
+  addArea.style.cssText = 'display:grid;grid-template-columns:1fr 70px 80px;gap:6px;margin-top:8px';
+  addArea.innerHTML =
+    '<input type="text" id="new-n-' + ci + '" placeholder="שם מוצר חדש" style="margin:0;padding:8px">' +
+    '<input type="number" id="new-p-' + ci + '" placeholder="₪מחיר" style="margin:0;padding:8px">' +
+    '<input type="text" id="new-d-' + ci + '" placeholder="תיאור" style="margin:0;padding:8px">';
+  sec.appendChild(addArea);
 
   var addBtn = document.createElement('button');
   addBtn.className = 'add-btn';
@@ -567,118 +658,117 @@ function buildCatSection(ci) {
   sec.appendChild(addBtn);
 
   var saveBtn = document.createElement('button');
-  saveBtn.className = 'save-inv-btn';
-  saveBtn.textContent = '💾 שמור שינויים';
+  saveBtn.className = 'save-btn';
+  saveBtn.textContent = '💾 שמור כל השינויים';
   saveBtn.onclick = saveCatalogEdits;
   sec.appendChild(saveBtn);
 
   return sec;
 }
 
-function buildProdRow(ci, ii) {
-  var item = catalog[ci].items[ii];
-  var row = document.createElement('div');
-  row.className = 'prod-item';
-  row.id = 'prod-' + ci + '-' + ii;
-  row.innerHTML =
-    '<div class="prod-row">' +
-    '<input type="text" id="pn-' + ci + '-' + ii + '" value="' + item.n + '">' +
-    '<input type="number" id="pp-' + ci + '-' + ii + '" value="' + item.p + '">' +
-    '<input type="text" id="pu-' + ci + '-' + ii + '" value="' + (item.u || 'ליחידה') + '">' +
-    '<button class="del-btn" onclick="deleteProduct(' + ci + ',' + ii + ')">✕</button>' +
-    '</div>';
-  return row;
-}
-
 function addProduct(ci) {
-  var name = document.getElementById('new-name-' + ci).value.trim();
-  var price = parseFloat(document.getElementById('new-price-' + ci).value) || 0;
-  var unit = document.getElementById('new-unit-' + ci).value.trim() || 'ליחידה';
+  var name = (document.getElementById('new-n-' + ci).value || '').trim();
+  var price = parseFloat(document.getElementById('new-p-' + ci).value) || 0;
+  var desc = (document.getElementById('new-d-' + ci).value || '').trim();
   if (!name) { showToast('נא להזין שם מוצר'); return; }
-  catalog[ci].items.push({n: name, d: '', u: unit, p: price});
+  catalog[ci].items.push({n:name, d:desc, u:'ליחידה', p:price});
   renderProducts();
   showToast('מוצר נוסף!');
 }
 
 function deleteProduct(ci, ii) {
-  if (!confirm('למחוק את "' + catalog[ci].items[ii].n + '"?')) return;
+  if (!confirm('למחוק "' + catalog[ci].items[ii].n + '"?')) return;
   catalog[ci].items.splice(ii, 1);
   renderProducts();
   showToast('מוצר נמחק');
 }
 
 function deleteCategory(ci) {
-  if (!confirm('למחוק את הקטגוריה "' + catalog[ci].n + '"?')) return;
+  if (!confirm('למחוק את קטגוריה "' + catalog[ci].n + '"?')) return;
   catalog.splice(ci, 1);
   renderProducts();
   showToast('קטגוריה נמחקה');
 }
 
 function addCategory() {
-  catalog.push({i: '🍰', n: 'קטגוריה חדשה', items: []});
+  catalog.push({i:'🍰', n:'קטגוריה חדשה', items:[]});
   renderProducts();
+  showToast('קטגוריה נוספה!');
 }
 
 function saveCatalogEdits() {
-  // Read edits from form
   for (var ci = 0; ci < catalog.length; ci++) {
-    var emojiEl = document.getElementById('cat-emoji-' + ci);
-    var nameEl = document.getElementById('cat-name-' + ci);
-    if (emojiEl) catalog[ci].i = emojiEl.value.trim() || catalog[ci].i;
-    if (nameEl) catalog[ci].n = nameEl.value.trim() || catalog[ci].n;
+    var eEl = document.getElementById('cat-e-' + ci);
+    var nEl = document.getElementById('cat-n-' + ci);
+    if (eEl) catalog[ci].i = eEl.value.trim() || catalog[ci].i;
+    if (nEl) catalog[ci].n = nEl.value.trim() || catalog[ci].n;
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
-      var nEl = document.getElementById('pn-' + ci + '-' + ii);
-      var pEl = document.getElementById('pp-' + ci + '-' + ii);
-      var uEl = document.getElementById('pu-' + ci + '-' + ii);
-      if (nEl) catalog[ci].items[ii].n = nEl.value.trim() || catalog[ci].items[ii].n;
-      if (pEl) catalog[ci].items[ii].p = parseFloat(pEl.value) || catalog[ci].items[ii].p;
-      if (uEl) catalog[ci].items[ii].u = uEl.value.trim() || catalog[ci].items[ii].u;
+      var pnEl = document.getElementById('pn-' + ci + '-' + ii);
+      var ppEl = document.getElementById('pp-' + ci + '-' + ii);
+      var pdEl = document.getElementById('pd-' + ci + '-' + ii);
+      if (pnEl) catalog[ci].items[ii].n = pnEl.value.trim() || catalog[ci].items[ii].n;
+      if (ppEl) catalog[ci].items[ii].p = parseFloat(ppEl.value) || catalog[ci].items[ii].p;
+      if (pdEl) catalog[ci].items[ii].d = pdEl.value.trim();
     }
   }
-  // Save to Sheets
   showToast('שומר...');
-  var scr = document.createElement('script');
-  var cb = 'cb_cat_' + Date.now();
-  window[cb] = function(r) {
-    delete window[cb];
-    if (document.body.contains(scr)) document.body.removeChild(scr);
-    showToast(r && r.success ? 'הקטלוג נשמר ✅' : 'נשמר מקומית בלבד');
-  };
-  scr.onerror = function() { delete window[cb]; showToast('נשמר מקומית'); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=saveCatalog&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(catalog));
-  document.body.appendChild(scr);
+  saveCatalogToSheets();
   buildOrderForm();
-  renderProducts();
 }
 
 // =====================================================
 // LOGO & TEXTS
 // =====================================================
-function loadLogo() {
-  var saved = localStorage.getItem('bakery_logo');
-  if (saved) { showLogoImage(saved); }
+function uploadLogo(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var data = e.target.result;
+    localStorage.setItem('bakery_logo', data);
+    showLogoImage(data);
+    showToast('לוגו נשמר ✅');
+  };
+  reader.readAsDataURL(file);
 }
 
 function showLogoImage(src) {
-  document.getElementById('logo-img').src = src;
-  document.getElementById('logo-img').style.display = 'block';
-  document.getElementById('default-icon').style.display = 'none';
+  var img = document.getElementById('logo-img');
+  var icon = document.getElementById('default-icon');
+  img.src = src;
+  img.style.display = 'block';
+  icon.style.display = 'none';
+}
+
+function loadLogo() {
+  var saved = localStorage.getItem('bakery_logo');
+  if (saved) showLogoImage(saved);
+}
+
+function saveTexts() {
+  var data = {
+    title: document.getElementById('title-text').textContent,
+    subtitle: document.getElementById('subtitle-text').textContent,
+    about: document.getElementById('about-text').textContent,
+    notes: document.getElementById('notes-text').innerHTML
+  };
+  localStorage.setItem('bakery_texts', JSON.stringify(data));
 }
 
 function loadTexts() {
   var saved = localStorage.getItem('bakery_texts');
-  if (saved) {
-    try {
-      var t = JSON.parse(saved);
-      if (t.title) document.getElementById('title-text').textContent = t.title;
-      if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
-      if (t.about) document.getElementById('about-text').textContent = t.about;
-    } catch(e) {}
-  }
+  if (!saved) return;
+  try {
+    var t = JSON.parse(saved);
+    if (t.title) document.getElementById('title-text').textContent = t.title;
+    if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
+    if (t.about) document.getElementById('about-text').textContent = t.about;
+    if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
+  } catch(e) {}
 }
 
 // =====================================================
-// UTILS
+// TOAST
 // =====================================================
 function showToast(msg) {
   var t = document.getElementById('toast');
@@ -687,7 +777,9 @@ function showToast(msg) {
   setTimeout(function() { t.classList.remove('on'); }, 2800);
 }
 
+// =====================================================
 // START
+// =====================================================
 init();
 </script>
 </body>
