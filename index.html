@@ -622,41 +622,42 @@ function getInv(k) {
 
 function syncInventoryToSheets() {
   if (!USE_ONLINE_INVENTORY) return;
-  
-  for (var k in inventory) {
-    var inv = inventory[k];
-    var productName = '';
-    
-    // Get product name from catalog
+  var keys = Object.keys(inventory).filter(function(k) {
     var parts = k.split('-');
     if (parts.length === 2) {
       var ci = parseInt(parts[0]);
       var ii = parseInt(parts[1]);
-      if (catalog[ci] && catalog[ci].items[ii]) {
-        productName = catalog[ci].items[ii].n;
-      }
+      return catalog[ci] && catalog[ci].items[ii];
     }
-    
-    // If not found in catalog, try from st (for custom items)
-    if (!productName && st[k]) {
-      productName = st[k].name;
+    return false;
+  });
+  var idx = 0;
+  function syncNext() {
+    if (idx >= keys.length) {
+      renderInventory();
+      renderAlerts();
+      return;
     }
-    
-    // Only sync if we have a product name
-    if (productName) {
-      var url = GOOGLE_SCRIPT_URL + 
-        '?action=updateInventory' +
-        '&productId=' + encodeURIComponent(k) +
-        '&name=' + encodeURIComponent(productName) +
-        '&stock=' + inv.stock +
-        '&minStock=' + inv.minStock +
-        '&_t=' + Date.now();
-      
-      // Use image trick to avoid CORS
-      var img = new Image();
-      img.src = url;
-    }
+    var k = keys[idx++];
+    var inv = inventory[k];
+    var parts = k.split('-');
+    var ci = parseInt(parts[0]);
+    var ii = parseInt(parts[1]);
+    var productName = catalog[ci].items[ii].n;
+    var scr = document.createElement('script');
+    var cb = 'cb_sync_' + Date.now() + '_' + idx;
+    window[cb] = function() { delete window[cb]; document.body.removeChild(scr); syncNext(); };
+    scr.onerror = function() { delete window[cb]; document.body.removeChild(scr); syncNext(); };
+    scr.src = GOOGLE_SCRIPT_URL + '?action=updateInventory&callback=' + cb +
+      '&productId=' + encodeURIComponent(k) +
+      '&name=' + encodeURIComponent(productName) +
+      '&stock=' + inv.stock +
+      '&minStock=' + (inv.minStock || 5) +
+      '&ordered=' + (inv.ordered || 0) +
+      '&lastUpdated=' + encodeURIComponent(new Date().toLocaleString('he-IL'));
+    document.body.appendChild(scr);
   }
+  syncNext();
 }
 
 // ---- TABS ----
