@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>אתי - אפייה ביתית</title>
+<meta name="version" content="1771687531">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -214,6 +215,16 @@ var catalog = [
 // =====================================================
 // INIT
 // =====================================================
+// Cache buster - version 1771687531
+var APP_VERSION = "1771687531";
+var storedVersion = sessionStorage.getItem('app_version');
+if (storedVersion && storedVersion !== APP_VERSION) {
+  sessionStorage.setItem('app_version', APP_VERSION);
+  window.location.reload(true);
+} else {
+  sessionStorage.setItem('app_version', APP_VERSION);
+}
+
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
