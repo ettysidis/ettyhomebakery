@@ -15,7 +15,7 @@ body { font-family: Arial, 'Arial Hebrew', sans-serif; background: linear-gradie
 .tab.active { color: #fff; border-bottom: 3px solid #ffd080; font-weight: bold; }
 .header { text-align: center; padding: 20px 16px 10px; }
 .logo-area { position: relative; display: inline-block; margin-bottom: 10px; }
-.logo-area img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #e8b87a; display: none; }
+.logo-area img { width: 150px; height: 150px; border-radius: 18px; object-fit: cover; border: 3px solid #e8b87a; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
 .logo-area .default-icon { font-size: 3rem; }
 .logo-upload-btn { display: none; position: absolute; bottom: 0; left: 0; background: #7c3f00; color: #fff; border: none; border-radius: 50%; width: 26px; height: 26px; font-size: .7rem; cursor: pointer; }
 .header h1 { font-size: 1.5rem; color: #7c3f00; }
@@ -28,10 +28,10 @@ body { font-family: Arial, 'Arial Hebrew', sans-serif; background: linear-gradie
 .cat { background: #fff; border-radius: 16px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
 .cat-hdr { background: linear-gradient(90deg, #f9e4c0, #fdf6ec); padding: 11px 18px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0d9b5; }
 .cat-hdr h2 { font-size: .95rem; font-weight: 700; color: #7c3f00; }
-.row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px; padding: 11px 18px; border-bottom: 1px solid #fdf0e0; }
+.row { display: grid; grid-template-columns: 1.8fr auto auto; align-items: center; gap: 8px; padding: 11px 18px; border-bottom: 1px solid #fdf0e0; }
 .row:last-child { border-bottom: none; }
-.iname { font-weight: 600; font-size: .9rem; }
-.idesc { font-size: .75rem; color: #a0673a; margin-top: 2px; }
+.iname { font-weight: 600; font-size: .88rem; }
+.idesc { font-size: .88rem; color: #a0673a; margin-top: 3px; line-height: 1.5; max-width: 220px; }
 .price { color: #7c3f00; font-weight: 700; font-size: .88rem; min-width: 45px; text-align: left; }
 .qty-box { display: flex; align-items: center; gap: 6px; }
 .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #e8b87a; background: #fff; color: #7c3f00; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
@@ -128,11 +128,12 @@ textarea { min-height: 80px; resize: vertical; }
     <span class="total-amount" id="total-display">₪0.00</span>
   </div>
 
-  <div class="important-notes" id="important-notes">
-    <h4>📌 הערות חשובות</h4>
-    <div class="editable" id="notes-text" contenteditable="false">• ההזמנות מתבצעות מראש בלבד
-• משלוח באזור מגורים
-• לשאלות ניתן לפנות בוואטסאפ</div>
+  <div class="about-box" id="important-notes">
+    <div style="font-weight:700;color:#7c3f00;margin-bottom:8px">📌 הערות חשובות</div>
+    <div class="editable" id="notes-text" contenteditable="false" style="line-height:1.9">• ההזמנות יהיו מוכנות בתאריך 27/02/26 מהשעה 10:00
+• איסוף עצמי / משלוח במתחם ארזה
+• תשלום מראש בביט
+• לכל שאלה: 054-4731775 או בוואטסאפ</div>
   </div>
 
   <button class="btn btn-secondary" onclick="resetOrder()">🗑️ אפס הזמנה</button>
