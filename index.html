@@ -808,6 +808,7 @@ function loadLogo() {
 
 function saveTexts() {
   var data = {
+    version: TEXTS_VERSION,
     title: document.getElementById('title-text').textContent,
     subtitle: document.getElementById('subtitle-text').textContent,
     about: document.getElementById('about-text').textContent,
@@ -816,6 +817,7 @@ function saveTexts() {
   localStorage.setItem('bakery_texts', JSON.stringify(data));
 }
 
+var TEXTS_VERSION = '20260221';
 function loadTexts() {
   var saved = localStorage.getItem('bakery_texts');
   if (!saved) return;
@@ -824,7 +826,8 @@ function loadTexts() {
     if (t.title) document.getElementById('title-text').textContent = t.title;
     if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
     if (t.about) document.getElementById('about-text').textContent = t.about;
-    if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
+    // Only load notes if saved by admin (version matches)
+    if (t.notes && t.version === TEXTS_VERSION) document.getElementById('notes-text').innerHTML = t.notes;
   } catch(e) {}
 }
 
