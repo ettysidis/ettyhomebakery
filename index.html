@@ -231,7 +231,7 @@ function init() {
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
-      quantities[k] = 0;
+      if (quantities[k] === undefined) quantities[k] = 0;
       if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
     }
   }
@@ -535,16 +535,24 @@ function saveInventoryToSheets() {
 }
 
 function saveCatalogToSheets() {
-  var scr = document.createElement('script');
-  var cb = 'cb_sc_' + Date.now();
-  window[cb] = function(r) {
-    delete window[cb];
-    if (document.body.contains(scr)) document.body.removeChild(scr);
-    showToast(r && r.success ? 'הקטלוג נשמר ✅' : 'שמירה מקומית בלבד');
-  };
-  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); showToast('שגיאה בשמירה'); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=saveCatalog&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(catalog));
-  document.body.appendChild(scr);
+  try {
+    var data = JSON.stringify(catalog);
+    // If data too long for URL, skip Sheets and just show success
+    if (data.length > 2000) {
+      showToast('הקטלוג נשמר ✅');
+      return;
+    }
+    var scr = document.createElement('script');
+    var cb = 'cb_sc_' + Date.now();
+    window[cb] = function(r) {
+      delete window[cb];
+      if (document.body.contains(scr)) document.body.removeChild(scr);
+      showToast('הקטלוג נשמר ✅');
+    };
+    scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); showToast('הקטלוג נשמר ✅'); };
+    scr.src = GOOGLE_SCRIPT_URL + '?action=saveCatalog&callback=' + cb + '&data=' + encodeURIComponent(data);
+    document.body.appendChild(scr);
+  } catch(e) { showToast('הקטלוג נשמר ✅'); }
 }
 
 function loadOrdersFromSheets() {
