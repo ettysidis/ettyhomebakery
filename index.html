@@ -53,7 +53,7 @@ textarea { min-height: 80px; resize: vertical; }
 .important-notes h4 { color: #7c3f00; margin-bottom: 8px; font-size: .9rem; }
 .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 22px; border-radius: 20px; font-size: .88rem; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.on { opacity: 1; }
-.admin-btn { background: transparent; border: 1px solid rgba(124,63,0,0.3); color: rgba(124,63,0,0.6); padding: 5px 12px; border-radius: 8px; font-size: .8rem; cursor: pointer; margin: 8px auto; display: block; }
+.admin-btn { background: transparent; border: none; color: rgba(124,63,0,0.18); padding: 4px 8px; font-size: .65rem; cursor: pointer; margin: 4px auto; display: block; letter-spacing: 1px; }
 /* Inventory */
 .inv-item { display: grid; grid-template-columns: 1fr 60px 60px; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f0d9b5; }
 .inv-item:last-child { border-bottom: none; }
@@ -101,7 +101,10 @@ textarea { min-height: 80px; resize: vertical; }
 
   <p class="subtitle">בחרי כמויות — הסכום יחושב אוטומטית</p>
 
-  <button class="admin-btn" id="admin-btn" onclick="toggleAdmin()">🔒 מנהלת</button>
+  <button class="admin-btn" id="admin-btn" onclick="toggleAdmin()">🔒</button>
+  <div id="test-mode-area" style="display:none;text-align:center;margin-bottom:8px">
+    <button onclick="toggleTestMode()" id="test-mode-btn" style="background:#fff3cd;border:1px solid #ffc107;color:#856404;padding:5px 14px;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:inherit">🧪 מצב בדיקה: כבוי</button>
+  </div>
 
   <div id="cc"></div>
 
@@ -180,6 +183,7 @@ var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1GWb8MmIKkXAa
 // STATE
 // =====================================================
 var adminMode = false;
+var testMode = false;
 var inventory = {};
 var quantities = {};
 
@@ -324,6 +328,27 @@ function resetOrder() {
 }
 
 // =====================================================
+// TEST MODE
+// =====================================================
+function toggleTestMode() {
+  testMode = !testMode;
+  var btn = document.getElementById('test-mode-btn');
+  if (testMode) {
+    btn.textContent = '🧪 מצב בדיקה: פעיל';
+    btn.style.background = '#d4edda';
+    btn.style.borderColor = '#28a745';
+    btn.style.color = '#155724';
+    showToast('מצב בדיקה פעיל - לא יישלחו מיילים');
+  } else {
+    btn.textContent = '🧪 מצב בדיקה: כבוי';
+    btn.style.background = '#fff3cd';
+    btn.style.borderColor = '#ffc107';
+    btn.style.color = '#856404';
+    showToast('מצב בדיקה כבוי');
+  }
+}
+
+// =====================================================
 // SUBMIT ORDER
 // =====================================================
 function submitOrder() {
@@ -370,10 +395,18 @@ function submitOrder() {
   saveOrderToSheets({date:date, clientName:name, clientPhone:phone, clientAddress:address, clientEmail:email, items:itemsText, total:'₪'+total.toFixed(2), notes:notes});
   saveInventoryToSheets();
 
-  // Send email
+  // Send email (skip in test mode)
+  if (testMode) {
+    showToast('בדיקה: הזמנה נשמרה (ללא מייל) ✅');
+    alert('מצב בדיקה!\nההזמנה נשמרה ב-Sheets ללא שליחת מייל.');
+    clearForm();
+    resetOrder();
+    return;
+  }
+
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
     subject: 'הזמנה חדשה מ-' + name,
-    order_details: orderDetails,
+    order_details: '<div dir="rtl" style="direction:rtl;text-align:right;font-family:Arial,sans-serif">' + orderDetails.replace(/\n/g, '<br>') + '</div>',
     client_name: name,
     client_phone: phone,
     client_address: address,
@@ -520,6 +553,10 @@ function toggleAdmin() {
     });
     document.getElementById('admin-btn').textContent = '🔓 מנהלת פעיל';
     document.getElementById('admin-btn').style.background = '#fff0cc';
+    document.getElementById('admin-btn').style.color = '#7c3f00';
+    document.getElementById('admin-btn').style.border = '1px solid #e8b87a';
+    // Show test mode button
+    document.getElementById('test-mode-area').style.display = 'block';
     showToast('מצב מנהלת פעיל ✅');
   } else {
     adminMode = false;
@@ -532,8 +569,12 @@ function toggleAdmin() {
       if (el) { el.contentEditable = 'false'; el.style.background = ''; }
     });
     saveTexts();
-    document.getElementById('admin-btn').textContent = '🔒 מנהלת';
+    document.getElementById('admin-btn').textContent = '🔒';
     document.getElementById('admin-btn').style.background = '';
+    document.getElementById('admin-btn').style.color = 'rgba(124,63,0,0.18)';
+    document.getElementById('admin-btn').style.border = 'none';
+    document.getElementById('test-mode-area').style.display = 'none';
+    testMode = false;
     showTab('order');
     showToast('יצאת ממצב מנהלת');
   }
