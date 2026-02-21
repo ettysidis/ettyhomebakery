@@ -437,8 +437,6 @@ function submitOrder() {
         inventory[k].stock = Math.max(0, inventory[k].stock - quantities[k]);
       }
     }
-    saveOrderToSheets({date:date, clientName:name, clientPhone:phone, clientAddress:address, clientEmail:email, items:itemsText, total:'₪'+total.toFixed(2), notes:notes});
-    saveInventoryToSheets();
     showToast('בדיקה: הזמנה נשמרה (ללא מייל) ✅');
     alert('מצב בדיקה!\nההזמנה נשמרה ב-Sheets ללא שליחת מייל.');
     clearForm();
