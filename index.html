@@ -732,6 +732,10 @@ function addProduct(ci) {
   var desc = (document.getElementById('new-d-' + ci).value || '').trim();
   if (!name) { showToast('נא להזין שם מוצר'); return; }
   catalog[ci].items.push({n:name, d:desc, u:'ליחידה', p:price});
+  var newii = catalog[ci].items.length - 1;
+  var newk = ci + '-' + newii;
+  quantities[newk] = 0;
+  if (!inventory[newk]) inventory[newk] = {stock: 50, minStock: 5};
   renderProducts();
   showToast('מוצר נוסף!');
 }
@@ -773,6 +777,14 @@ function saveCatalogEdits() {
   }
   showToast('שומר...');
   saveCatalogToSheets();
+  // Re-init quantities and inventory for any new products
+  for (var ci = 0; ci < catalog.length; ci++) {
+    for (var ii = 0; ii < catalog[ci].items.length; ii++) {
+      var k = ci + '-' + ii;
+      if (quantities[k] === undefined) quantities[k] = 0;
+      if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
+    }
+  }
   buildOrderForm();
 }
 
