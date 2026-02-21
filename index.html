@@ -570,9 +570,11 @@ function loadOrdersFromSheets() {
         div.className = 'order-item';
         div.innerHTML = '<div class="order-date">' + o.date + '</div>' +
           '<div class="order-name">' + o.clientName + ' | ' + o.clientPhone + '</div>' +
+          (o.clientAddress ? '<div style="font-size:.82rem;color:#777;margin:2px 0">📍 ' + o.clientAddress + '</div>' : '') +
           '<div style="font-size:.82rem;color:#555;white-space:pre-line;margin:4px 0">' + o.items + '</div>' +
           '<div style="font-weight:700;color:#7c3f00">' + o.total + '</div>' +
-          (o.notes ? '<div style="font-size:.78rem;color:#a0673a;margin-top:4px">הערה: ' + o.notes + '</div>' : '');
+          (o.notes ? '<div style="font-size:.78rem;color:#a0673a;margin-top:4px">📝 ' + o.notes + '</div>' : '') +
+          (o.clientEmail ? '<div style="font-size:.78rem;color:#a0673a;margin-top:2px">📧 ' + o.clientEmail + '</div>' : '');
         list.appendChild(div);
       });
     } else {
