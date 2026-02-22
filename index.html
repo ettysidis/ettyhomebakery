@@ -235,6 +235,23 @@ if (storedVersion && storedVersion !== APP_VERSION) {
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
+  // Load catalog from localStorage first
+  var savedCat = localStorage.getItem('bakery_catalog');
+  if (savedCat) {
+    try {
+      var parsedCat = JSON.parse(savedCat);
+      if (parsedCat && parsedCat.length > 0) catalog = parsedCat;
+    } catch(e) {}
+  }
+  // Load inventory from localStorage first
+  var savedInv = localStorage.getItem('bakery_inventory');
+  if (savedInv) {
+    try {
+      var parsedInv = JSON.parse(savedInv);
+      if (parsedInv && Object.keys(parsedInv).length > 0) inventory = parsedInv;
+    } catch(e) {}
+  }
+  // Init quantities
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
@@ -245,8 +262,9 @@ function init() {
   loadTexts();
   loadLogo();
   buildOrderForm();
-  loadInventoryFromSheets();
-  loadCatalogFromSheets();
+  // Load from Sheets only if no localStorage data
+  if (!savedCat) loadCatalogFromSheets();
+  if (!savedInv) loadInventoryFromSheets();
 }
 
 // =====================================================
