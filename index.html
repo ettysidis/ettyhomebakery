@@ -944,6 +944,13 @@ function saveTexts() {
 }
 
 var TEXTS_VERSION = '20260222c';
+var RESET_VERSION = '20260222d';
+if (localStorage.getItem('reset_version') !== RESET_VERSION) {
+  localStorage.removeItem('bakery_catalog');
+  localStorage.removeItem('bakery_inventory');
+  localStorage.removeItem('bakery_texts');
+  localStorage.setItem('reset_version', RESET_VERSION);
+}
 function loadTexts() {
   var saved = localStorage.getItem('bakery_texts');
   if (!saved) return;
