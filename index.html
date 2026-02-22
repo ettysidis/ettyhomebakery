@@ -441,12 +441,6 @@ function submitOrder() {
   // Send email (skip in test mode)
   if (testMode) {
     // Update inventory
-    for (var k in quantities) {
-      if ((quantities[k] || 0) > 0) {
-        if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
-        inventory[k].stock = Math.max(0, inventory[k].stock - quantities[k]);
-      }
-    }
     showToast('בדיקה: הזמנה נשמרה (ללא מייל) ✅');
     alert('מצב בדיקה!\nההזמנה נשמרה ב-Sheets ללא שליחת מייל.');
     clearForm();
@@ -700,10 +694,9 @@ function saveInventory() {
       }
     }
   }
-  showToast('שומר מלאי...');
+  showToast('המלאי נשמר ✅');
   saveInventoryToSheets();
   buildOrderForm();
-  showToast('המלאי נשמר ✅');
 }
 
 // =====================================================
