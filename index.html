@@ -956,12 +956,20 @@ function saveTexts() {
 }
 
 var TEXTS_VERSION = '20260222c';
-var RESET_VERSION = '20260222g';
-if (localStorage.getItem('reset_version') !== RESET_VERSION) {
-  localStorage.removeItem('bakery_catalog');
-  localStorage.removeItem('bakery_inventory');
-  localStorage.removeItem('bakery_texts');
-  localStorage.setItem('reset_version', RESET_VERSION);
+// =====================================================
+// 1. הגדרות גרסה - זה המפתח לעדכון אצל הלקוחות!
+// =====================================================
+// בכל פעם שאת מעלה קובץ חדש, שני את המספר/אות כאן (למשל ל-v1, v2...)
+var CURRENT_VERSION = '20260222_v10';
+
+// בדיקה אם הגרסה השתנתה - אם כן, מנקים זיכרון ומרעננים
+if (localStorage.getItem('app_version') !== CURRENT_VERSION) {
+    localStorage.clear(); // מוחק זיכרון ישן
+    localStorage.setItem('app_version', CURRENT_VERSION);
+    // מוסיף פרמטר לכתובת כדי לעקוף את זיכרון הדפדפן (Cache)
+    if (!window.location.search.includes('v=')) {
+        window.location.href = window.location.pathname + '?v=' + CURRENT_VERSION;
+    }
 }
 function loadTexts() {
   var saved = localStorage.getItem('bakery_texts');
