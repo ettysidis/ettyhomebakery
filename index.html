@@ -95,12 +95,12 @@ textarea { min-height: 80px; resize: vertical; }
       <button class="logo-upload-btn" id="logo-upload-btn" onclick="document.getElementById('logo-file').click()" title="החלף לוגו">📷</button>
       <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="uploadLogo(this)">
     </div>
-    <h1><span class="editable" id="title-text" contenteditable="false">אתי - אפייה ביתית</span></h1>
-    <p><span class="editable" id="subtitle-text" contenteditable="false">מאפים ולחמים טריים מהתנור</span></p>
+    <h1><span class="editable" id="title-text" contenteditable="false" onblur="saveTexts()">אתי - אפייה ביתית</span></h1>
+    <p><span class="editable" id="subtitle-text" contenteditable="false" onblur="saveTexts()">מאפים ולחמים טריים מהתנור</span></p>
   </div>
 
   <div class="about-box">
-    <span class="editable" id="about-text" contenteditable="false" style="white-space:pre-line">שלום! אני אתי, אופה וקונדיטורית. קצת לפני סוף השבוע, אני מזמינה אתכם ליהנות מהמאפים והעוגות שאני אופה במיוחד עבורכם.
+    <span class="editable" id="about-text" contenteditable="false" style="white-space:pre-line" onblur="saveTexts()">שלום! אני אתי, אופה וקונדיטורית. קצת לפני סוף השבוע, אני מזמינה אתכם ליהנות מהמאפים והעוגות שאני אופה במיוחד עבורכם.
 המכירה תתקיים ביום שישי ה-27/02/26, החל מהשעה 10:00 במתחם ארזה (איסוף עצמי או משלוח בתוך המתחם).
 
 איך זה עובד?
@@ -108,7 +108,7 @@ textarea { min-height: 80px; resize: vertical; }
 • מחכים לאישור – לאחר מילוי הטופס, אצור איתכם קשר באופן אישי לאישור ההזמנה והסדרת התשלום.
 • נהנים מהטעם – בשישי בבוקר המאפים כבר יהיו מוכנים עבורכם.
 
-לכל שאלה או התייעצות, אני זמינה עבורכם בטלפון או בווטסאפ: <a href="https://wa.me/9720544731775?text=%D7%94%D7%99%D7%99%20%D7%90%D7%AA%D7%99%2C%20%D7%99%D7%A9%20%D7%9C%D7%99%20%D7%A9%D7%90%D7%9C%D7%94%20%D7%9C%D7%92%D7%91%D7%99%20%D7%94%D7%9E%D7%9B%D7%99%D7%A8%D7%94%20%D7%91%D7%A9%D7%99%D7%A9%D7%99" style="color:#7c3f00;font-weight:700;text-decoration:none">054-4731775 📱</a>
+לכל שאלה או התייעצות, אני זמינה עבורכם בטלפון או בווטסאפ: <a href="https://wa.me/9720544731775?text=%D7%94%D7%99%D7%99%20%D7%90%D7%AA%D7%99%2C%20%D7%99%D7%A9%20%D7%9C%D7%99%20%D7%A9%D7%90%D7%9C%D7%94%20%D7%9C%D7%92%D7%91%D7%99%20%D7%94%D7%9E%D7%9B%D7%99%D7%A8%D7%94%20%D7%91%D7%A9%D7%99%D7%A9%D7%99" style="color:#7c3f00;font-weight:700;text-decoration:none">054-4731775</a>
 
 אשמח לספק לכם מוצרים איכותיים ומפנקים לסוף השבוע! 🧡</span>
   </div>
@@ -124,7 +124,7 @@ textarea { min-height: 80px; resize: vertical; }
 
   <div class="section">
     <h3>📝 הערות להזמנה</h3>
-    <textarea id="order-notes" placeholder="אלרגיות, בקשות מיוחדות, מועד אספקה..."></textarea>
+    <textarea id="order-notes" placeholder=""></textarea>
   </div>
 
   <div class="section">
@@ -144,7 +144,7 @@ textarea { min-height: 80px; resize: vertical; }
 
   <div class="about-box" id="important-notes">
     <div style="font-weight:700;color:#7c3f00;margin-bottom:10px;font-size:1.05rem">📌 הערות חשובות</div>
-    <div class="editable" id="notes-text" contenteditable="false" style="line-height:2.1;font-size:1rem;white-space:pre-line;outline:none;min-height:60px">• ההזמנות יהיו מוכנות בתאריך 27/02/26 מהשעה 10:00
+    <div class="editable" id="notes-text" contenteditable="false" style="line-height:2.1;font-size:1rem;white-space:pre-line;outline:none;min-height:60px" onblur="saveTexts()">• ההזמנות יהיו מוכנות בתאריך 27/02/26 מהשעה 10:00
 • איסוף עצמי / משלוח במתחם ארזה
 • תשלום מראש בביט
 • לכל שאלה: 054-4731775 או בוואטסאפ</div>
@@ -242,7 +242,7 @@ function init() {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
       if (quantities[k] === undefined) quantities[k] = 0;
-      if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
+      if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
     }
   }
   loadTexts();
@@ -429,7 +429,7 @@ function submitOrder() {
   // Update inventory locally
   for (var k in quantities) {
     if ((quantities[k] || 0) > 0) {
-      if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
+      if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
       inventory[k].stock = Math.max(0, inventory[k].stock - quantities[k]);
     }
   }
@@ -443,7 +443,7 @@ function submitOrder() {
     // Update inventory
     for (var k in quantities) {
       if ((quantities[k] || 0) > 0) {
-        if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
+        if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
         inventory[k].stock = Math.max(0, inventory[k].stock - quantities[k]);
       }
     }
@@ -734,10 +734,11 @@ function buildCatSection(ci) {
     var row = document.createElement('div');
     row.className = 'prod-item';
     row.innerHTML =
-      '<div style="display:grid;grid-template-columns:1fr 70px 80px auto;gap:6px;align-items:center">' +
-      '<input type="text" id="pn-' + ci + '-' + ii + '" value="' + item.n + '" placeholder="שם" style="margin:0;padding:6px">' +
+      '<div style="display:grid;grid-template-columns:110px 50px 60px 1fr auto;gap:6px;align-items:center">' +
+      '<input type="text" id="pn-' + ci + '-' + ii + '" value="' + item.n + '" placeholder="שם" style="margin:0;padding:6px;font-size:.82rem">' +
       '<input type="number" id="pp-' + ci + '-' + ii + '" value="' + item.p + '" placeholder="₪" style="margin:0;padding:6px">' +
-      '<input type="text" id="pd-' + ci + '-' + ii + '" value="' + (item.d||'') + '" placeholder="תיאור" style="margin:0;padding:6px">' +
+      '<input type="text" id="pu-' + ci + '-' + ii + '" value="' + (item.u||'ליחידה') + '" placeholder="יחידה" style="margin:0;padding:6px;font-size:.78rem">' +
+      '<input type="text" id="pd-' + ci + '-' + ii + '" value="' + (item.d||'') + '" placeholder="תיאור מפורט" style="margin:0;padding:6px">' +
       '<button class="del-btn" onclick="deleteProduct(' + ci + ',' + ii + ')">✕</button>' +
       '</div>';
     sec.appendChild(row);
@@ -747,8 +748,9 @@ function buildCatSection(ci) {
   var addArea = document.createElement('div');
   addArea.style.cssText = 'display:grid;grid-template-columns:1fr 70px 80px;gap:6px;margin-top:8px';
   addArea.innerHTML =
-    '<input type="text" id="new-n-' + ci + '" placeholder="שם מוצר חדש" style="margin:0;padding:8px">' +
+    '<input type="text" id="new-n-' + ci + '" placeholder="שם מוצר" style="margin:0;padding:8px">' +
     '<input type="number" id="new-p-' + ci + '" placeholder="₪מחיר" style="margin:0;padding:8px">' +
+    '<input type="text" id="new-u-' + ci + '" placeholder="יחידה/מארז" style="margin:0;padding:8px">' +
     '<input type="text" id="new-d-' + ci + '" placeholder="תיאור" style="margin:0;padding:8px">';
   sec.appendChild(addArea);
 
@@ -770,9 +772,10 @@ function buildCatSection(ci) {
 function addProduct(ci) {
   var name = (document.getElementById('new-n-' + ci).value || '').trim();
   var price = parseFloat(document.getElementById('new-p-' + ci).value) || 0;
+  var unit = (document.getElementById('new-u-' + ci) ? document.getElementById('new-u-' + ci).value : '').trim() || 'ליחידה';
   var desc = (document.getElementById('new-d-' + ci).value || '').trim();
   if (!name) { showToast('נא להזין שם מוצר'); return; }
-  catalog[ci].items.push({n:name, d:desc, u:'ליחידה', p:price});
+  catalog[ci].items.push({n:name, d:desc, u:unit, p:price});
   var newii = catalog[ci].items.length - 1;
   var newk = ci + '-' + newii;
   quantities[newk] = 0;
@@ -811,8 +814,10 @@ function saveCatalogEdits() {
       var pnEl = document.getElementById('pn-' + ci + '-' + ii);
       var ppEl = document.getElementById('pp-' + ci + '-' + ii);
       var pdEl = document.getElementById('pd-' + ci + '-' + ii);
+      var puEl = document.getElementById('pu-' + ci + '-' + ii);
       if (pnEl) catalog[ci].items[ii].n = pnEl.value.trim() || catalog[ci].items[ii].n;
       if (ppEl) catalog[ci].items[ii].p = parseFloat(ppEl.value) || catalog[ci].items[ii].p;
+      if (puEl) catalog[ci].items[ii].u = puEl.value.trim() || 'ליחידה';
       if (pdEl) catalog[ci].items[ii].d = pdEl.value.trim();
     }
   }
@@ -823,7 +828,7 @@ function saveCatalogEdits() {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
       if (quantities[k] === undefined) quantities[k] = 0;
-      if (!inventory[k]) inventory[k] = {stock: 50, minStock: 5};
+      if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
     }
   }
   buildOrderForm();
@@ -870,18 +875,22 @@ function saveTexts() {
   localStorage.setItem('bakery_texts', JSON.stringify(data));
 }
 
-var TEXTS_VERSION = '20260221';
+var TEXTS_VERSION = '20260222b';
 function loadTexts() {
   var saved = localStorage.getItem('bakery_texts');
   if (!saved) return;
   try {
     var t = JSON.parse(saved);
+    // If version doesn't match, clear and use hardcoded defaults
+    if (t.version !== TEXTS_VERSION) {
+      localStorage.removeItem('bakery_texts');
+      return;
+    }
     if (t.title) document.getElementById('title-text').textContent = t.title;
     if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
     if (t.about) document.getElementById('about-text').innerHTML = t.about;
-    // Only load notes if saved by admin (version matches)
-    if (t.notes && t.version === TEXTS_VERSION) document.getElementById('notes-text').innerHTML = t.notes;
-  } catch(e) {}
+    if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
+  } catch(e) { localStorage.removeItem('bakery_texts'); }
 }
 
 // =====================================================
