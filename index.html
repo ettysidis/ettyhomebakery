@@ -253,21 +253,41 @@ function init() {
 // LOAD CATALOG FROM SHEETS
 // =====================================================
 function loadCatalogFromSheets() {
+  // First try localStorage
+  var saved = localStorage.getItem('bakery_catalog');
+  if (saved) {
+    try {
+      var parsed = JSON.parse(saved);
+      if (parsed && parsed.length > 0) {
+        catalog = parsed;
+        quantities = {};
+        for (var ci = 0; ci < catalog.length; ci++) {
+          for (var ii = 0; ii < catalog[ci].items.length; ii++) {
+            var k = ci + '-' + ii;
+            quantities[k] = 0;
+            if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
+          }
+        }
+        buildOrderForm();
+        return;
+      }
+    } catch(e) {}
+  }
+  // No localStorage - load from Sheets
   var scr = document.createElement('script');
   var cb = 'cb_cat_load_' + Date.now();
   window[cb] = function(r) {
     delete window[cb];
     if (document.body.contains(scr)) document.body.removeChild(scr);
-    console.log('Catalog from Sheets:', JSON.stringify(r));
     if (r && r.success && r.data && r.data.length > 0) {
       catalog = r.data;
-      // Re-init quantities and inventory for all products including new ones
+      localStorage.setItem('bakery_catalog', JSON.stringify(catalog));
       quantities = {};
-      for (var ci = 0; ci < catalog.length; ci++) {
-        for (var ii = 0; ii < catalog[ci].items.length; ii++) {
-          var k = ci + '-' + ii;
-          quantities[k] = 0;
-          if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
+      for (var ci2 = 0; ci2 < catalog.length; ci2++) {
+        for (var ii2 = 0; ii2 < catalog[ci2].items.length; ii2++) {
+          var k2 = ci2 + '-' + ii2;
+          quantities[k2] = 0;
+          if (!inventory[k2]) inventory[k2] = {stock: 20, minStock: 5};
         }
       }
       buildOrderForm();
@@ -481,17 +501,28 @@ function clearForm() {
 // SHEETS FUNCTIONS
 // =====================================================
 function loadInventoryFromSheets() {
+  // First try localStorage
+  var saved = localStorage.getItem('bakery_inventory');
+  if (saved) {
+    try {
+      var parsed = JSON.parse(saved);
+      if (Object.keys(parsed).length > 0) {
+        inventory = parsed;
+        buildOrderForm();
+        return; // Use localStorage, skip Sheets
+      }
+    } catch(e) {}
+  }
+  // No localStorage - load from Sheets (first time only)
   var scr = document.createElement('script');
   var cb = 'cb_inv_' + Date.now();
   window[cb] = function(r) {
     delete window[cb];
     if (document.body.contains(scr)) document.body.removeChild(scr);
-    console.log('Inventory from Sheets:', JSON.stringify(r));
-    if (r && r.success && r.data) {
+    if (r && r.success && r.data && Object.keys(r.data).length > 0) {
       inventory = r.data;
+      localStorage.setItem('bakery_inventory', JSON.stringify(inventory));
       buildOrderForm();
-    } else {
-      console.log('Inventory load failed or empty');
     }
   };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
@@ -517,6 +548,8 @@ function saveOrderToSheets(o) {
 }
 
 function saveInventoryToSheets() {
+  // Save to localStorage immediately
+  localStorage.setItem('bakery_inventory', JSON.stringify(inventory));
   var keys = Object.keys(inventory);
   var i = 0;
   function next() {
@@ -541,6 +574,7 @@ function saveInventoryToSheets() {
 
 function saveCatalogToSheets() {
   try {
+    localStorage.setItem('bakery_catalog', JSON.stringify(catalog));
     var data = JSON.stringify(catalog);
     // If data too long for URL, skip Sheets and just show success
     if (data.length > 2000) {
