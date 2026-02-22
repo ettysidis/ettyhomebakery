@@ -100,7 +100,17 @@ textarea { min-height: 80px; resize: vertical; }
   </div>
 
   <div class="about-box">
-    <span class="editable" id="about-text" contenteditable="false">שלום! אני אתי, מכינה מאפים ולחמים טריים בהכנה ביתית עם חומרי גלם איכותיים. כל המוצרים נאפים בהזמנה מראש. אשמח לספק לכם מוצרים איכותיים ומפנקים! 🧡</span>
+    <span class="editable" id="about-text" contenteditable="false" style="white-space:pre-line">שלום! אני אתי, אופה וקונדיטורית. קצת לפני סוף השבוע, אני מזמינה אתכם ליהנות מהמאפים והעוגות שאני אופה במיוחד עבורכם.
+המכירה תתקיים ביום שישי ה-27/02/26, החל מהשעה 10:00 במתחם ארזה (איסוף עצמי או משלוח בתוך המתחם).
+
+איך זה עובד?
+• ממלאים את הטופס – ניתן להזמין עד יום רביעי בשעה 16:00.
+• מחכים לאישור – לאחר מילוי הטופס, אצור איתכם קשר באופן אישי לאישור ההזמנה והסדרת התשלום.
+• נהנים מהטעם – בשישי בבוקר המאפים כבר יהיו מוכנים עבורכם.
+
+לכל שאלה או התייעצות, אני זמינה עבורכם בטלפון או בווטסאפ: <a href="https://wa.me/9720544731775?text=%D7%94%D7%99%D7%99%20%D7%90%D7%AA%D7%99%2C%20%D7%99%D7%A9%20%D7%9C%D7%99%20%D7%A9%D7%90%D7%9C%D7%94%20%D7%9C%D7%92%D7%91%D7%99%20%D7%94%D7%9E%D7%9B%D7%99%D7%A8%D7%94%20%D7%91%D7%A9%D7%99%D7%A9%D7%99" style="color:#7c3f00;font-weight:700;text-decoration:none">054-4731775 📱</a>
+
+אשמח לספק לכם מוצרים איכותיים ומפנקים לסוף השבוע! 🧡</span>
   </div>
 
   <p class="subtitle">בחרי כמויות — הסכום יחושב אוטומטית</p>
@@ -868,7 +878,7 @@ function loadTexts() {
     var t = JSON.parse(saved);
     if (t.title) document.getElementById('title-text').textContent = t.title;
     if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
-    if (t.about) document.getElementById('about-text').textContent = t.about;
+    if (t.about) document.getElementById('about-text').innerHTML = t.about;
     // Only load notes if saved by admin (version matches)
     if (t.notes && t.version === TEXTS_VERSION) document.getElementById('notes-text').innerHTML = t.notes;
   } catch(e) {}
