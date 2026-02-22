@@ -261,11 +261,13 @@ function loadCatalogFromSheets() {
     console.log('Catalog from Sheets:', JSON.stringify(r));
     if (r && r.success && r.data && r.data.length > 0) {
       catalog = r.data;
-      // Re-init quantities for new catalog
+      // Re-init quantities and inventory for all products including new ones
       quantities = {};
       for (var ci = 0; ci < catalog.length; ci++) {
         for (var ii = 0; ii < catalog[ci].items.length; ii++) {
-          quantities[ci + '-' + ii] = 0;
+          var k = ci + '-' + ii;
+          quantities[k] = 0;
+          if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
         }
       }
       buildOrderForm();
