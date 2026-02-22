@@ -190,7 +190,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzceQc0KP87HcEdZ_GBRn7ZFemS4nE8fVxcP-ecDXmcEVCCDVLzbJ5fGHXtr6v-_KGDNw/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyG8yqJJ6Ra1KjabkU-PlKovHExF1BHiU8a2oRpoGnU3T0FbVcUeJnO-oxckTKlc8fMOA/exec';
 
 // =====================================================
 // STATE
@@ -241,7 +241,7 @@ var catalog = [
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
-  // Init quantities from hardcoded catalog and inventory (shown immediately)
+  // Init with hardcoded defaults first (shown immediately)
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
@@ -252,35 +252,16 @@ function init() {
   loadTexts();
   loadLogo();
   buildOrderForm();
-  // Then update from Sheets (real-time stock)
+  // Load real stock from Sheets on every open (same as catalog/texts)
   loadInventoryFromSheets();
+  loadCatalogFromSheets();
 }
 
 // =====================================================
 // LOAD CATALOG FROM SHEETS
 // =====================================================
 function loadCatalogFromSheets() {
-  // First try localStorage
-  var saved = localStorage.getItem('bakery_catalog');
-  if (saved) {
-    try {
-      var parsed = JSON.parse(saved);
-      if (parsed && parsed.length > 0) {
-        catalog = parsed;
-        quantities = {};
-        for (var ci = 0; ci < catalog.length; ci++) {
-          for (var ii = 0; ii < catalog[ci].items.length; ii++) {
-            var k = ci + '-' + ii;
-            quantities[k] = 0;
-            if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
-          }
-        }
-        buildOrderForm();
-        return;
-      }
-    } catch(e) {}
-  }
-  // No localStorage - load from Sheets
+  // Always load from Sheets - no localStorage
   var scr = document.createElement('script');
   var cb = 'cb_cat_load_' + Date.now();
   window[cb] = function(r) {
@@ -517,15 +498,18 @@ function loadInventoryFromSheets() {
     if (document.body.contains(scr)) document.body.removeChild(scr);
     if (r && r.success && r.data) {
       var data = r.data;
+      // Only accept keys in format "0-0", "1-2" etc
       var validKeys = Object.keys(data).filter(function(k) { return /^\d+-\d+$/.test(k); });
       if (validKeys.length > 0) {
         validKeys.forEach(function(k) {
-          if (inventory[k]) {
-            inventory[k].stock = data[k].stock !== undefined ? data[k].stock : inventory[k].stock;
-            inventory[k].minStock = data[k].minStock !== undefined ? data[k].minStock : inventory[k].minStock;
-          }
+          if (!inventory[k]) inventory[k] = {stock:20, minStock:5, ordered:0};
+          inventory[k].stock = data[k].stock !== undefined ? parseInt(data[k].stock) : inventory[k].stock;
+          inventory[k].minStock = data[k].minStock !== undefined ? parseInt(data[k].minStock) : inventory[k].minStock;
         });
-        buildOrderForm(); // refresh display with real stock
+        buildOrderForm();
+      } else {
+        // Sheets is empty - save hardcoded defaults to Sheets now
+        saveInventoryToSheets();
       }
     }
   };
@@ -552,32 +536,32 @@ function saveOrderToSheets(o) {
 }
 
 function saveInventoryToSheets() {
-  // Build full inventory array and send in one request
-  var items = [];
-  Object.keys(inventory).forEach(function(k) {
+  var keys = Object.keys(inventory);
+  var i = 0;
+  function next() {
+    if (i >= keys.length) return;
+    var k = keys[i++];
+    if (!/^\d+-\d+$/.test(k)) { next(); return; }
     var parts = k.split('-');
     var ci = parseInt(parts[0]), ii = parseInt(parts[1]);
-    if (!catalog[ci] || !catalog[ci].items[ii]) return;
+    if (!catalog[ci] || !catalog[ci].items[ii]) { next(); return; }
     var inv = inventory[k];
-    items.push({
-      productId: k,
-      name: catalog[ci].items[ii].n,
-      stock: inv.stock||0,
-      minStock: inv.minStock||5,
-      ordered: inv.ordered||0
-    });
-  });
-  var scr = document.createElement('script');
-  var cb = 'cb_si_' + Date.now();
-  window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=updateInventoryBulk&callback=' + cb +
-    '&data=' + encodeURIComponent(JSON.stringify(items));
-  document.body.appendChild(scr);
+    var scr = document.createElement('script');
+    var cb = 'cb_si_' + Date.now() + '_' + i;
+    window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); next(); };
+    scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); next(); };
+    scr.src = GOOGLE_SCRIPT_URL + '?action=updateInventory&callback=' + cb +
+      '&productId=' + encodeURIComponent(k) +
+      '&name=' + encodeURIComponent(catalog[ci].items[ii].n) +
+      '&stock=' + (inv.stock||0) + '&minStock=' + (inv.minStock||5) + '&ordered=' + (inv.ordered||0);
+    document.body.appendChild(scr);
+  }
+  next();
 }
 
 function saveCatalogToSheets() {
   try {
+    localStorage.removeItem('bakery_catalog'); // clear old local data
     var data = JSON.stringify(catalog);
     // If data too long for URL, skip Sheets and just show success
     if (data.length > 2000) {
