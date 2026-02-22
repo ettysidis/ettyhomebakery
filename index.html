@@ -489,9 +489,12 @@ function loadInventoryFromSheets() {
   window[cb] = function(r) {
     delete window[cb];
     if (document.body.contains(scr)) document.body.removeChild(scr);
+    console.log('Inventory from Sheets:', JSON.stringify(r));
     if (r && r.success && r.data) {
       inventory = r.data;
       buildOrderForm();
+    } else {
+      console.log('Inventory load failed or empty');
     }
   };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
