@@ -189,7 +189,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-13kNS1yWwvx3uz8dCoWv0tvqLsBHbC9lU4zdp0HjoABm-fjRoGJaobzfDohI7D4aeg/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_AXj6kr-iLvv1EPBUG0c5YR67PaF7xLGO4pBf233VanZCVo9uSVS-LXzJ66Yzizcm3w/exec';
 
 // =====================================================
 // STATE
@@ -258,6 +258,7 @@ function loadCatalogFromSheets() {
   window[cb] = function(r) {
     delete window[cb];
     if (document.body.contains(scr)) document.body.removeChild(scr);
+    console.log('Catalog from Sheets:', JSON.stringify(r));
     if (r && r.success && r.data && r.data.length > 0) {
       catalog = r.data;
       // Re-init quantities for new catalog
