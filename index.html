@@ -198,17 +198,17 @@ var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_AXj6kr-iLvv1
 var adminMode = false;
 var testMode = false;
 var inventory = {
-  "0-0": {stock:10, minStock:5, ordered:0},
-  "0-1": {stock:10, minStock:5, ordered:0},
-  "0-2": {stock:7, minStock:5, ordered:0},
-  "0-3": {stock:40, minStock:5, ordered:0},
-  "1-0": {stock:6, minStock:5, ordered:0},
-  "1-1": {stock:6, minStock:5, ordered:0},
-  "2-0": {stock:9, minStock:5, ordered:0},
-  "2-1": {stock:9, minStock:5, ordered:0},
-  "2-2": {stock:4, minStock:5, ordered:0},
-  "2-3": {stock:4, minStock:5, ordered:0},
-  "2-4": {stock:4, minStock:5, ordered:0}
+  "0-0": {stock:10, minStock:3, ordered:0},
+  "0-1": {stock:10, minStock:3, ordered:0},
+  "0-2": {stock:7, minStock:2, ordered:0},
+  "0-3": {stock:40, minStock:4, ordered:0},
+  "1-0": {stock:6, minStock:2, ordered:0},
+  "1-1": {stock:6, minStock:2, ordered:0},
+  "2-0": {stock:9, minStock:2, ordered:0},
+  "2-1": {stock:9, minStock:2, ordered:0},
+  "2-2": {stock:4, minStock:4, ordered:0},
+  "2-3": {stock:4, minStock:4, ordered:0},
+  "2-4": {stock:4, minStock:4, ordered:0}
 };
 var quantities = {};
 
@@ -236,58 +236,12 @@ var catalog = [
 // INIT
 // =====================================================
 // Cache buster - version 1771688706
-// בכל שינוי קוד/מלאי - שני את המספר!
-var RESET_VERSION = '20260222_v11';
-if (localStorage.getItem('reset_version') !== RESET_VERSION) {
-    var savedLogo = localStorage.getItem('bakery_logo');
-    localStorage.removeItem('bakery_catalog');
-    localStorage.removeItem('bakery_inventory');
-    localStorage.removeItem('bakery_texts');
-    localStorage.removeItem('app_version');
-    localStorage.setItem('reset_version', RESET_VERSION);
-    if (savedLogo) localStorage.setItem('bakery_logo', savedLogo);
-}
+
 
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
-  // Clear bad inventory data (old format with date keys)
-  var oldInv = localStorage.getItem('bakery_inventory');
-  if (oldInv) {
-    try {
-      var oldParsed = JSON.parse(oldInv);
-      var validKeys = Object.keys(oldParsed).filter(function(k) { return /^\d+-\d+$/.test(k); });
-      if (validKeys.length === 0) {
-        localStorage.removeItem('bakery_inventory');
-      }
-    } catch(e) { localStorage.removeItem('bakery_inventory'); }
-  }
-  // Load catalog from localStorage first
-  var savedCat = localStorage.getItem('bakery_catalog');
-  if (savedCat) {
-    try {
-      var parsedCat = JSON.parse(savedCat);
-      if (parsedCat && parsedCat.length > 0) catalog = parsedCat;
-    } catch(e) {}
-  }
-  // Load inventory from localStorage first
-  var savedInv = localStorage.getItem('bakery_inventory');
-  if (savedInv) {
-    try {
-      var parsedInv = JSON.parse(savedInv);
-      // Validate keys are in format "X-X" (e.g. "0-0", "1-2")
-      var validKeys = Object.keys(parsedInv).filter(function(k) { return /^\d+-\d+$/.test(k); });
-      if (validKeys.length > 0) {
-        var cleanInv = {};
-        validKeys.forEach(function(k) { cleanInv[k] = parsedInv[k]; });
-        inventory = cleanInv;
-      } else {
-        // Bad data - clear it
-        localStorage.removeItem('bakery_inventory');
-      }
-    } catch(e) { localStorage.removeItem('bakery_inventory'); }
-  }
-  // Init quantities
+  // Init quantities from hardcoded catalog and inventory
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
@@ -298,9 +252,6 @@ function init() {
   loadTexts();
   loadLogo();
   buildOrderForm();
-  // Load from Sheets only if no localStorage data
-  if (!savedCat) loadCatalogFromSheets();
-  if (!savedInv) loadInventoryFromSheets();
 }
 
 // =====================================================
@@ -555,33 +506,7 @@ function clearForm() {
 // SHEETS FUNCTIONS
 // =====================================================
 function loadInventoryFromSheets() {
-  // First try localStorage
-  var saved = localStorage.getItem('bakery_inventory');
-  if (saved) {
-    try {
-      var parsed = JSON.parse(saved);
-      if (Object.keys(parsed).length > 0) {
-        inventory = parsed;
-        buildOrderForm();
-        return; // Use localStorage, skip Sheets
-      }
-    } catch(e) {}
-  }
-  // No localStorage - load from Sheets (first time only)
-  var scr = document.createElement('script');
-  var cb = 'cb_inv_' + Date.now();
-  window[cb] = function(r) {
-    delete window[cb];
-    if (document.body.contains(scr)) document.body.removeChild(scr);
-    if (r && r.success && r.data && Object.keys(r.data).length > 0) {
-      inventory = r.data;
-      localStorage.setItem('bakery_inventory', JSON.stringify(inventory));
-      buildOrderForm();
-    }
-  };
-  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=getInventory&callback=' + cb;
-  document.body.appendChild(scr);
+  // Inventory is now hardcoded - no Sheets loading needed
 }
 
 function saveOrderToSheets(o) {
@@ -602,8 +527,6 @@ function saveOrderToSheets(o) {
 }
 
 function saveInventoryToSheets() {
-  // Save to localStorage immediately
-  localStorage.setItem('bakery_inventory', JSON.stringify(inventory));
   var keys = Object.keys(inventory);
   var i = 0;
   function next() {
@@ -628,7 +551,6 @@ function saveInventoryToSheets() {
 
 function saveCatalogToSheets() {
   try {
-    localStorage.setItem('bakery_catalog', JSON.stringify(catalog));
     var data = JSON.stringify(catalog);
     // If data too long for URL, skip Sheets and just show success
     if (data.length > 2000) {
