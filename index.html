@@ -241,7 +241,7 @@ var catalog = [
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
-  // Init quantities from hardcoded catalog and inventory
+  // Init quantities from hardcoded catalog and inventory (shown immediately)
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
@@ -252,6 +252,8 @@ function init() {
   loadTexts();
   loadLogo();
   buildOrderForm();
+  // Then update from Sheets (real-time stock)
+  loadInventoryFromSheets();
 }
 
 // =====================================================
@@ -506,7 +508,28 @@ function clearForm() {
 // SHEETS FUNCTIONS
 // =====================================================
 function loadInventoryFromSheets() {
-  // Inventory is now hardcoded - no Sheets loading needed
+  var scr = document.createElement('script');
+  var cb = 'cb_inv_' + Date.now();
+  window[cb] = function(r) {
+    delete window[cb];
+    if (document.body.contains(scr)) document.body.removeChild(scr);
+    if (r && r.success && r.data) {
+      var data = r.data;
+      var validKeys = Object.keys(data).filter(function(k) { return /^\d+-\d+$/.test(k); });
+      if (validKeys.length > 0) {
+        validKeys.forEach(function(k) {
+          if (inventory[k]) {
+            inventory[k].stock = data[k].stock !== undefined ? data[k].stock : inventory[k].stock;
+            inventory[k].minStock = data[k].minStock !== undefined ? data[k].minStock : inventory[k].minStock;
+          }
+        });
+        buildOrderForm(); // refresh display with real stock
+      }
+    }
+  };
+  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+  scr.src = GOOGLE_SCRIPT_URL + '?action=getInventory&callback=' + cb;
+  document.body.appendChild(scr);
 }
 
 function saveOrderToSheets(o) {
