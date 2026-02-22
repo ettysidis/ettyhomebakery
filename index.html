@@ -158,7 +158,7 @@ textarea { min-height: 80px; resize: vertical; }
       <h3>📦 ניהול מלאי</h3>
       <div id="inv-grid"></div>
       <button class="save-btn" onclick="saveInventory()">💾 שמור מלאי</button>
-      <button class="save-btn" onclick="if(confirm('לאפס את כל הזיכרון המקומי?')){localStorage.clear();location.reload();}" style="background:#d32f2f;margin-top:8px">🔄 איפוס זיכרון מלא</button>
+      <button class="save-btn" onclick="if(confirm('לאפס את כל הזיכרון המקומי?')){var logo=localStorage.getItem('bakery_logo');localStorage.clear();if(logo)localStorage.setItem('bakery_logo',logo);location.reload();}" style="background:#d32f2f;margin-top:8px">🔄 איפוס זיכרון מלא</button>
     </div>
   </div>
 </div>
@@ -237,13 +237,15 @@ var catalog = [
 // =====================================================
 // Cache buster - version 1771688706
 // בכל שינוי קוד/מלאי - שני את המספר!
-var RESET_VERSION = '20260222_v10';
+var RESET_VERSION = '20260222_v11';
 if (localStorage.getItem('reset_version') !== RESET_VERSION) {
-    localStorage.clear();
+    var savedLogo = localStorage.getItem('bakery_logo');
+    localStorage.removeItem('bakery_catalog');
+    localStorage.removeItem('bakery_inventory');
+    localStorage.removeItem('bakery_texts');
+    localStorage.removeItem('app_version');
     localStorage.setItem('reset_version', RESET_VERSION);
-    if (!window.location.search.includes('upd=' + RESET_VERSION)) {
-        window.location.href = window.location.pathname + '?upd=' + RESET_VERSION;
-    }
+    if (savedLogo) localStorage.setItem('bakery_logo', savedLogo);
 }
 
 emailjs.init(EMAILJS_PUBLIC_KEY);
@@ -962,17 +964,7 @@ var TEXTS_VERSION = '20260222c';
 // 1. הגדרות גרסה - זה המפתח לעדכון אצל הלקוחות!
 // =====================================================
 // בכל פעם שאת מעלה קובץ חדש, שני את המספר/אות כאן (למשל ל-v1, v2...)
-var CURRENT_VERSION = '20260222_v10';
 
-// בדיקה אם הגרסה השתנתה - אם כן, מנקים זיכרון ומרעננים
-if (localStorage.getItem('app_version') !== CURRENT_VERSION) {
-    localStorage.clear(); // מוחק זיכרון ישן
-    localStorage.setItem('app_version', CURRENT_VERSION);
-    // מוסיף פרמטר לכתובת כדי לעקוף את זיכרון הדפדפן (Cache)
-    if (!window.location.search.includes('v=')) {
-        window.location.href = window.location.pathname + '?v=' + CURRENT_VERSION;
-    }
-}
 function loadTexts() {
   var saved = localStorage.getItem('bakery_texts');
   if (!saved) return;
