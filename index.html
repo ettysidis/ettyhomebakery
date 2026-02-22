@@ -248,8 +248,17 @@ function init() {
   if (savedInv) {
     try {
       var parsedInv = JSON.parse(savedInv);
-      if (parsedInv && Object.keys(parsedInv).length > 0) inventory = parsedInv;
-    } catch(e) {}
+      // Validate keys are in format "X-X" (e.g. "0-0", "1-2")
+      var validKeys = Object.keys(parsedInv).filter(function(k) { return /^\d+-\d+$/.test(k); });
+      if (validKeys.length > 0) {
+        var cleanInv = {};
+        validKeys.forEach(function(k) { cleanInv[k] = parsedInv[k]; });
+        inventory = cleanInv;
+      } else {
+        // Bad data - clear it
+        localStorage.removeItem('bakery_inventory');
+      }
+    } catch(e) { localStorage.removeItem('bakery_inventory'); }
   }
   // Init quantities
   for (var ci = 0; ci < catalog.length; ci++) {
