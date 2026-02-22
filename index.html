@@ -225,7 +225,7 @@ var catalog = [
   ]},
   {i:"🎂", n:"עוגות ועוגיות", items:[
     {n:"עוגת תפוחים מקורמלים", d:"עוגת תפוחים מקורמלים עם קינמון ווניל, מבוססת שמנת וחמאה עם פירורים", u:"לעוגה", p:50},
-    {n:"בראוניז", d:"בראוניז פאדג'י ושוקולדי במיוחד", u:"לעוגה", p:50},
+    {n:"בראוניז", d:"בראוניז פאדג'י ושוקולדי במיוחד", u:"לעוגה", p:60},
     {n:"אוזני המן שוקולד", d:"בצק חמאה פריך במיוחד במילוי קרם גנאש שוקולד ושמנת עשיר", u:"למארז", p:45},
     {n:"אוזני המן נוטלה", d:"בצק חמאה פריך במיוחד במילוי נוטלה", u:"למארז", p:45},
     {n:"אוזני המן תמרים", d:"בצק חמאה פריך במיוחד במילוי תמרים וקינמון", u:"מארז", p:45}
@@ -464,6 +464,8 @@ function submitOrder() {
   // Save to Sheets
   saveOrderToSheets({date:date, clientName:name, clientPhone:phone, clientAddress:address, clientEmail:email, items:itemsText, total:'₪'+total.toFixed(2), notes:notes});
   saveInventoryToSheets();
+  // Reload inventory from Sheets after 3 seconds to sync all devices
+  setTimeout(function() { loadInventoryFromSheets(); }, 3000);
 
   // Send email (skip in test mode)
   if (testMode) {
