@@ -144,10 +144,7 @@ textarea { min-height: 80px; resize: vertical; }
 
   <div class="about-box" id="important-notes">
     <div style="font-weight:700;color:#7c3f00;margin-bottom:10px;font-size:1.05rem">📌 הערות חשובות</div>
-    <div class="editable" id="notes-text" contenteditable="false" style="line-height:2.1;font-size:1rem;white-space:pre-line;outline:none;min-height:60px" onblur="saveTexts()">• ההזמנות יהיו מוכנות בתאריך 27/02/26 מהשעה 10:00
-• איסוף עצמי / משלוח במתחם ארזה
-• תשלום מראש בביט
-• לכל שאלה: 054-4731775 או בוואטסאפ</div>
+    <div class="editable" id="notes-text" contenteditable="false" style="line-height:2.1;font-size:1rem;white-space:pre-line;outline:none;min-height:60px" onblur="saveTexts()"></div>
   </div>
 
   <button class="btn btn-secondary" onclick="resetOrder()">🗑️ אפס הזמנה</button>
@@ -670,7 +667,7 @@ function renderInventory() {
     grid.appendChild(hdr);
     for (var ii = 0; ii < cat.items.length; ii++) {
       var k = ci + '-' + ii;
-      var inv = inventory[k] || {stock:50, minStock:5};
+      var inv = inventory[k] || {stock:20, minStock:5};
       var row = document.createElement('div');
       row.className = 'inv-item';
       row.innerHTML =
@@ -875,7 +872,7 @@ function saveTexts() {
   localStorage.setItem('bakery_texts', JSON.stringify(data));
 }
 
-var TEXTS_VERSION = '20260222b';
+var TEXTS_VERSION = '20260222c';
 function loadTexts() {
   var saved = localStorage.getItem('bakery_texts');
   if (!saved) return;
