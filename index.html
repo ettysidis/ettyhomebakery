@@ -191,7 +191,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTMVLgjH-vsqsz7ZpcI-hX7zrQgDONetE-cd2YuzP0sdL0c4nu790uFYiUGyqpy6O5qg/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKbO8F3Db_Eyhk1DvxdEtbC-9lCiBJBt0saQBtfZfMmNCpj4hz5s1YhzI71gVlaY8EKA/exec';
 
 // =====================================================
 // STATE
@@ -458,34 +458,33 @@ function submitOrder() {
     return;
   }
 
-  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-    subject: 'הזמנה חדשה מ-' + name,
-    order_details: '<div dir="rtl" style="direction:rtl;text-align:right;font-family:Arial,sans-serif">' + orderDetails.replace(/\n/g, '<br>') + '</div>',
-    client_name: name,
-    client_phone: phone,
-    client_address: address,
-    order_total: '₪' + total.toFixed(2),
-    order_date: date
-  }).then(function() {
-    showToast('ההזמנה נשלחה! ✅');
-    alert('תודה רבה ' + name + '!\n\nקיבלנו את ההזמנה שלך ✅\nניצור איתך קשר בהקדם האפשרי.\n\nאתי - אפייה ביתית 🧡');
-    clearForm();
-    resetOrder();
-  }, function(err) {
-    console.error('Email error:', err);
-    showToast('ההזמנה נשמרה ✅');
-    alert('תודה ' + name + '!\nההזמנה התקבלה.\nניצור איתך קשר בהקדם.');
-    clearForm();
-    resetOrder();
-  });
+    
+
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        subject: 'הזמנה חדשה מ-' + name,
+        order_details: '<div dir="rtl" style="direction:rtl;text-align:right;font-family:Arial,sans-serif">' + orderDetails.replace(/\n/g, '<br>') + '</div>',
+        client_name: name,
+        client_phone: phone,
+        client_address: address,
+        order_total: '₪' + total.toFixed(2),
+        order_date: date
+    }).then(function () {
+        showToast('ההזמנה נשלחה בהצלחה! ✅');
+        alert('תודה רבה ' + name + '!\n\nקיבלנו את ההזמנה שלך בהצלחה ✅\nניצור איתך קשר בהקדם האפשרי.\n\nאתי - אפייה ביתית 🧡');
+        loadInventoryFromSheets();
+        clearForm();
+        resetOrder();
+    }, function (err) {
+        console.error('Email error:', err);
+        showToast('ההזמנה נשמרה בהצלחה ✅');
+        alert('תודה ' + name + '!\nההזמנה התקבלה בהצלחה.\nניצור איתך קשר בהקדם.');
+        loadInventoryFromSheets();
+        clearForm();
+        resetOrder();
+    });
+
 }
 
-function clearForm() {
-  ['client-name','client-phone','client-address','client-email','order-notes'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-}
 
 // =====================================================
 // SHEETS FUNCTIONS
@@ -995,6 +994,14 @@ function showToast(msg) {
 // =====================================================
 // START
 // =====================================================
+// רענון אוטומטי של המלאי מהשיטס כל 2 דקות
+setInterval(function() {
+    console.log("מרענן מלאי אוטומטי...");
+    loadInventoryFromSheets();
+}, 120000);
+
+// הקריאה המקורית שלך שנמצאת שם:
+init();
 init();
 </script>
 </body>
