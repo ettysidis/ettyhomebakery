@@ -190,26 +190,15 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyG8yqJJ6Ra1KjabkU-PlKovHExF1BHiU8a2oRpoGnU3T0FbVcUeJnO-oxckTKlc8fMOA/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTMVLgjH-vsqsz7ZpcI-hX7zrQgDONetE-cd2YuzP0sdL0c4nu790uFYiUGyqpy6O5qg/exec';
 
 // =====================================================
 // STATE
 // =====================================================
 var adminMode = false;
 var testMode = false;
-var inventory = {
-  "0-0": {stock:10, minStock:3, ordered:0},
-  "0-1": {stock:10, minStock:3, ordered:0},
-  "0-2": {stock:7, minStock:2, ordered:0},
-  "0-3": {stock:40, minStock:4, ordered:0},
-  "1-0": {stock:6, minStock:2, ordered:0},
-  "1-1": {stock:6, minStock:2, ordered:0},
-  "2-0": {stock:9, minStock:2, ordered:0},
-  "2-1": {stock:9, minStock:2, ordered:0},
-  "2-2": {stock:4, minStock:4, ordered:0},
-  "2-3": {stock:4, minStock:4, ordered:0},
-  "2-4": {stock:4, minStock:4, ordered:0}
-};
+// המלאי נטען מ-Sheets בלבד - אל תשני כאן!
+var inventory = {};
 var quantities = {};
 
 var catalog = [
@@ -241,19 +230,16 @@ var catalog = [
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
-  // Init with hardcoded defaults first (shown immediately)
+  // אתחל כמויות בלבד - המלאי יגיע מ-Sheets
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
       if (quantities[k] === undefined) quantities[k] = 0;
-      if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
     }
   }
   loadTexts();
   loadLogo();
-  buildOrderForm();
-  // Load real stock from Sheets on every open (same as catalog/texts)
-  loadInventoryFromSheets();
+  // טען קטלוג ומלאי מ-Sheets (הם יקראו לבניית הטופס בסיום)
   loadCatalogFromSheets();
 }
 
@@ -273,16 +259,15 @@ function loadCatalogFromSheets() {
       quantities = {};
       for (var ci2 = 0; ci2 < catalog.length; ci2++) {
         for (var ii2 = 0; ii2 < catalog[ci2].items.length; ii2++) {
-          var k2 = ci2 + '-' + ii2;
-          quantities[k2] = 0;
-          if (!inventory[k2]) inventory[k2] = {stock: 20, minStock: 5};
+          quantities[ci2 + '-' + ii2] = 0;
         }
       }
-      buildOrderForm();
+      // אחרי שהקטלוג נטען, טען מלאי מ-Sheets ואז בנה את הטופס
+      loadInventoryFromSheets();
     }
   };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=getCatalog&callback=' + cb;
+  scr.src = GOOGLE_SCRIPT_URL + '?action=getCatalog&callback=' + cb + '&t=' + Date.now();
   document.body.appendChild(scr);
 }
 
@@ -508,13 +493,19 @@ function loadInventoryFromSheets() {
         });
         buildOrderForm();
       } else {
-        // Sheets is empty - save hardcoded defaults to Sheets now
-        saveInventoryToSheets();
+        // Sheets ריק - הצג טופס עם מלאי פתוח (50 יח׳ לכל מוצר)
+        for (var ci3 = 0; ci3 < catalog.length; ci3++) {
+          for (var ii3 = 0; ii3 < catalog[ci3].items.length; ii3++) {
+            var k3 = ci3 + '-' + ii3;
+            if (!inventory[k3]) inventory[k3] = {stock: 50, minStock: 5, ordered: 0};
+          }
+        }
+        buildOrderForm();
       }
     }
   };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=getInventory&callback=' + cb;
+  scr.src = GOOGLE_SCRIPT_URL + '?action=getInventory&callback=' + cb + '&t=' + Date.now();
   document.body.appendChild(scr);
 }
 
@@ -886,10 +877,12 @@ function saveTexts() {
     version: TEXTS_VERSION,
     title: document.getElementById('title-text').textContent,
     subtitle: document.getElementById('subtitle-text').textContent,
-    about: document.getElementById('about-text').textContent,
+    about: document.getElementById('about-text').innerHTML,
     notes: document.getElementById('notes-text').innerHTML
   };
+  // שמור גם ב-localStorage וגם ב-Sheets
   localStorage.setItem('bakery_texts', JSON.stringify(data));
+  saveTextsToSheets(data);
 }
 
 var TEXTS_VERSION = '20260222c';
@@ -899,20 +892,57 @@ var TEXTS_VERSION = '20260222c';
 // בכל פעם שאת מעלה קובץ חדש, שני את המספר/אות כאן (למשל ל-v1, v2...)
 
 function loadTexts() {
-  var saved = localStorage.getItem('bakery_texts');
-  if (!saved) return;
-  try {
-    var t = JSON.parse(saved);
-    // If version doesn't match, clear and use hardcoded defaults
-    if (t.version !== TEXTS_VERSION) {
-      localStorage.removeItem('bakery_texts');
-      return;
+  // נסה לטעון מ-Sheets קודם, אחרת localStorage
+  loadTextsFromSheets();
+}
+
+function applyTexts(t) {
+  if (t.title) document.getElementById('title-text').textContent = t.title;
+  if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
+  if (t.about) document.getElementById('about-text').innerHTML = t.about;
+  if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
+}
+
+function loadTextsFromSheets() {
+  var scr = document.createElement('script');
+  var cb = 'cb_txt_' + Date.now();
+  window[cb] = function(r) {
+    delete window[cb];
+    if (document.body.contains(scr)) document.body.removeChild(scr);
+    if (r && r.success && r.data) {
+      // Sheets מחזיר טקסטים - נשתמש בהם
+      applyTexts(r.data);
+      localStorage.setItem('bakery_texts', JSON.stringify(r.data));
+    } else {
+      // Sheets ריק - נסה localStorage
+      var saved = localStorage.getItem('bakery_texts');
+      if (saved) {
+        try { applyTexts(JSON.parse(saved)); } catch(e) {}
+      }
     }
-    if (t.title) document.getElementById('title-text').textContent = t.title;
-    if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
-    if (t.about) document.getElementById('about-text').innerHTML = t.about;
-    if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
-  } catch(e) { localStorage.removeItem('bakery_texts'); }
+  };
+  scr.onerror = function() {
+    delete window[cb];
+    if (document.body.contains(scr)) document.body.removeChild(scr);
+    // fallback ל-localStorage
+    var saved = localStorage.getItem('bakery_texts');
+    if (saved) {
+      try { applyTexts(JSON.parse(saved)); } catch(e) {}
+    }
+  };
+  scr.src = GOOGLE_SCRIPT_URL + '?action=getTexts&callback=' + cb + '&t=' + Date.now();
+  document.body.appendChild(scr);
+}
+
+function saveTextsToSheets(data) {
+  try {
+    var scr = document.createElement('script');
+    var cb = 'cb_st_' + Date.now();
+    window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+    scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+    scr.src = GOOGLE_SCRIPT_URL + '?action=saveTexts&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(data));
+    document.body.appendChild(scr);
+  } catch(e) {}
 }
 
 // =====================================================
