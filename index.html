@@ -191,7 +191,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSa__znOMaqmY6kygEYjuyfw-tyDuCy-X5Bryl4mHZ9vzff_chAcfkajhYFE_XY-VXpw/exec';
+    var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoJvv9fk5HSmmTMF0fFdrPxVblJYiUjp6-3NhL_J9UBRIy8yYHAOr-eoWaxeyfZ5Cm8A/execexec';
 
 // =====================================================
 // STATE
@@ -511,24 +511,14 @@ function loadInventoryFromSheets() {
 }
 
 function saveOrderToSheets(o) {
-  var scr = document.createElement('script');
-  var cb = 'cb_so_' + Date.now();
-  window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=saveOrder&callback=' + cb +
-    '&date=' + encodeURIComponent(o.date) +
-    '&clientName=' + encodeURIComponent(o.clientName) +
-    '&clientPhone=' + encodeURIComponent(o.clientPhone) +
-    '&clientAddress=' + encodeURIComponent(o.clientAddress) +
-    '&clientEmail=' + encodeURIComponent(o.clientEmail||'') +
-    '&items=' + encodeURIComponent(o.items) +
-    '&total=' + encodeURIComponent(o.total) +
-    '&notes=' + encodeURIComponent(o.notes||'');
-  document.body.appendChild(scr);
+  fetch(GOOGLE_SCRIPT_URL + '?action=saveOrder', {
+    method: 'POST',
+    body: JSON.stringify(o),
+    headers: {'Content-Type': 'text/plain'}
+  }).catch(function() {});
 }
 
 function saveInventoryToSheets(onDone) {
-  // שלח את כל המלאי בבקשה אחת כ-JSON
   var items = [];
   Object.keys(inventory).forEach(function(k) {
     if (!/^\d+-\d+$/.test(k)) return;
@@ -545,43 +535,28 @@ function saveInventoryToSheets(onDone) {
     });
   });
   if (items.length === 0) { if (onDone) onDone(); return; }
-  var data = encodeURIComponent(JSON.stringify(items));
-  var scr = document.createElement('script');
-  var cb = 'cb_si_' + Date.now();
-  window[cb] = function(r) {
-    delete window[cb];
-    if (document.body.contains(scr)) document.body.removeChild(scr);
+  fetch(GOOGLE_SCRIPT_URL + '?action=updateInventoryBulk', {
+    method: 'POST',
+    body: JSON.stringify(items),
+    headers: {'Content-Type': 'text/plain'}
+  }).then(function() {
     if (onDone) onDone();
-  };
-  scr.onerror = function() {
-    delete window[cb];
-    if (document.body.contains(scr)) document.body.removeChild(scr);
+  }).catch(function() {
     if (onDone) onDone();
-  };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=updateInventoryBulk&callback=' + cb + '&data=' + data;
-  document.body.appendChild(scr);
+  });
 }
 
 function saveCatalogToSheets() {
-  try {
-    localStorage.removeItem('bakery_catalog'); // clear old local data
-    var data = JSON.stringify(catalog);
-    // If data too long for URL, skip Sheets and just show success
-    if (data.length > 2000) {
-      showToast('הקטלוג נשמר ✅');
-      return;
-    }
-    var scr = document.createElement('script');
-    var cb = 'cb_sc_' + Date.now();
-    window[cb] = function(r) {
-      delete window[cb];
-      if (document.body.contains(scr)) document.body.removeChild(scr);
-      showToast('הקטלוג נשמר ✅');
-    };
-    scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); showToast('הקטלוג נשמר ✅'); };
-    scr.src = GOOGLE_SCRIPT_URL + '?action=saveCatalog&callback=' + cb + '&data=' + encodeURIComponent(data);
-    document.body.appendChild(scr);
-  } catch(e) { showToast('הקטלוג נשמר ✅'); }
+  localStorage.removeItem('bakery_catalog');
+  fetch(GOOGLE_SCRIPT_URL + '?action=saveCatalog', {
+    method: 'POST',
+    body: JSON.stringify(catalog),
+    headers: {'Content-Type': 'text/plain'}
+  }).then(function() {
+    showToast('הקטלוג נשמר ✅');
+  }).catch(function() {
+    showToast('הקטלוג נשמר ✅');
+  });
 }
 
 function loadOrdersFromSheets() {
@@ -968,14 +943,11 @@ function loadTextsFromSheets() {
 }
 
 function saveTextsToSheets(data) {
-  try {
-    var scr = document.createElement('script');
-    var cb = 'cb_st_' + Date.now();
-    window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-    scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-    scr.src = GOOGLE_SCRIPT_URL + '?action=saveTexts&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(data));
-    document.body.appendChild(scr);
-  } catch(e) {}
+  fetch(GOOGLE_SCRIPT_URL + '?action=saveTexts', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {'Content-Type': 'text/plain'}
+  }).catch(function() {});
 }
 
 // =====================================================
