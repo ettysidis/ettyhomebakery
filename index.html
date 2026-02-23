@@ -158,6 +158,7 @@ textarea { min-height: 80px; resize: vertical; }
       <h3>📦 ניהול מלאי</h3>
       <div id="inv-grid"></div>
       <button class="save-btn" onclick="saveInventory()">💾 שמור מלאי</button>
+      <button class="save-btn" onclick="cleanInventoryDuplicates()" style="background:#e67e22;margin-top:8px">🧹 נקה כפילויות מ-Sheets</button>
       <button class="save-btn" onclick="if(confirm('לאפס את כל הזיכרון המקומי?')){var logo=localStorage.getItem('bakery_logo');localStorage.clear();if(logo)localStorage.setItem('bakery_logo',logo);location.reload();}" style="background:#d32f2f;margin-top:8px">🔄 איפוס זיכרון מלא</button>
     </div>
   </div>
@@ -190,7 +191,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTMVLgjH-vsqsz7ZpcI-hX7zrQgDONetE-cd2YuzP0sdL0c4nu790uFYiUGyqpy6O5qg/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7G-FBRYuTKGnYileLYent7CMc8p1kYXbX2dQrNkYsOcExeyaRJ_b3Ca96tsjBYK5d2w/exec';
 
 // =====================================================
 // STATE
@@ -691,6 +692,25 @@ function renderInventory() {
       grid.appendChild(row);
     }
   }
+}
+
+function cleanInventoryDuplicates() {
+  showToast('מנקה כפילויות...');
+  var scr = document.createElement('script');
+  var cb = 'cb_clean_' + Date.now();
+  window[cb] = function(r) {
+    delete window[cb];
+    if (document.body.contains(scr)) document.body.removeChild(scr);
+    if (r && r.success) {
+      showToast('נוקו ' + (r.deleted || 0) + ' שורות כפולות ✅');
+      setTimeout(function() { loadInventoryFromSheets(); }, 1000);
+    } else {
+      showToast('שגיאה בניקוי');
+    }
+  };
+  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); showToast('שגיאה'); };
+  scr.src = GOOGLE_SCRIPT_URL + '?action=cleanInventory&callback=' + cb;
+  document.body.appendChild(scr);
 }
 
 function saveInventory() {
