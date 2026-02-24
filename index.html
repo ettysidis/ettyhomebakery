@@ -424,7 +424,7 @@ function submitOrder() {
   for (var k in quantities) {
     if ((quantities[k] || 0) > 0) orderedQty[k] = quantities[k];
   }
-  saveOrderToSheets({date:date, clientName:name, clientPhone:phone, clientAddress:address, clientEmail:email, items:itemsText, total:'₪'+total.toFixed(2), notes:notes, quantities:JSON.stringify(orderedQty)});
+  saveOrderToSheets({date:date, clientName:name, clientPhone:phone, clientAddress:address, clientEmail:email, items:itemsText, total:'₪'+total.toFixed(2), notes:notes, quantities:orderedQty});
   // Reload inventory from Sheets after 4 seconds to show updated stock
   setTimeout(function() { loadInventoryFromSheets(); }, 4000);
 
@@ -509,7 +509,14 @@ function saveOrderToSheets(o) {
   var cb = 'cb_so_' + Date.now();
   window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=saveOrder&callback=' + cb +
+  // שלח כמויות כפרמטרים נפרדים במקום JSON
+  var qtyParams = '';
+  if (o.quantities) {
+    Object.keys(o.quantities).forEach(function(k) {
+      qtyParams += '&qty_' + k.replace('-','_') + '=' + o.quantities[k];
+    });
+  }
+  scr.src = GOOGLE_SCRIPT_URL + '?action=saveOrder&t=' + Date.now() + '&callback=' + cb +
     '&date=' + encodeURIComponent(o.date) +
     '&clientName=' + encodeURIComponent(o.clientName) +
     '&clientPhone=' + encodeURIComponent(o.clientPhone) +
@@ -518,7 +525,7 @@ function saveOrderToSheets(o) {
     '&items=' + encodeURIComponent(o.items) +
     '&total=' + encodeURIComponent(o.total) +
     '&notes=' + encodeURIComponent(o.notes||'') +
-    '&quantities=' + encodeURIComponent(o.quantities||'{}');
+    qtyParams;
   document.body.appendChild(scr);
 }
 
@@ -535,7 +542,7 @@ function saveCatalogToSheets() {
     showToast('הקטלוג נשמר ✅');
   };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); showToast('הקטלוג נשמר ✅'); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=saveCatalog&callback=' + cb + '&data=' + encodeURIComponent(data);
+  scr.src = GOOGLE_SCRIPT_URL + '?action=saveCatalog&t=' + Date.now() + '&callback=' + cb + '&data=' + encodeURIComponent(data);
   document.body.appendChild(scr);
 }
 
@@ -566,7 +573,7 @@ function loadOrdersFromSheets() {
     }
   };
   scr.onerror = function() { delete window[cb]; list.innerHTML = '<p style="color:#dc3545;font-size:.85rem">שגיאה בטעינה</p>'; };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=getOrders&callback=' + cb;
+  scr.src = GOOGLE_SCRIPT_URL + '?action=getOrders&t=' + Date.now() + '&callback=' + cb;
   document.body.appendChild(scr);
 }
 
@@ -675,7 +682,7 @@ function cleanInventoryDuplicates() {
     }
   };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); showToast('שגיאה'); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=cleanInventory&callback=' + cb;
+  scr.src = GOOGLE_SCRIPT_URL + '?action=cleanInventory&t=' + Date.now() + '&callback=' + cb;
   document.body.appendChild(scr);
 }
 
@@ -923,7 +930,7 @@ function saveTextsToSheets(data) {
   var cb = 'cb_st_' + Date.now();
   window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
   scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=saveTexts&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(data));
+  scr.src = GOOGLE_SCRIPT_URL + '?action=saveTexts&t=' + Date.now() + '&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(data));
   document.body.appendChild(scr);
 }
 
