@@ -191,26 +191,14 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNUHdPyGJ3UC60WD5_CMzmNEFYEnibh92G7or_I54jvkAZBTis7BSHEgSE1WdaALfDHg/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTMVLgjH-vsqsz7ZpcI-hX7zrQgDONetE-cd2YuzP0sdL0c4nu790uFYiUGyqpy6O5qg/exec';
 
 // =====================================================
 // STATE
 // =====================================================
 var adminMode = false;
 var testMode = false;
-var inventory = {
-  "0-0": {stock:10, minStock:3, ordered:0},
-  "0-1": {stock:10, minStock:3, ordered:0},
-  "0-2": {stock:7, minStock:2, ordered:0},
-  "0-3": {stock:40, minStock:4, ordered:0},
-  "1-0": {stock:6, minStock:2, ordered:0},
-  "1-1": {stock:6, minStock:2, ordered:0},
-  "2-0": {stock:9, minStock:2, ordered:0},
-  "2-1": {stock:9, minStock:2, ordered:0},
-  "2-2": {stock:4, minStock:1, ordered:0},
-  "2-3": {stock:4, minStock:1, ordered:0},
-  "2-4": {stock:4, minStock:1, ordered:0}
-};
+var inventory = {}; // loaded from Sheets only
 var quantities = {};
 
 var catalog = [
@@ -431,22 +419,14 @@ function submitOrder() {
 
   showToast('שולח הזמנה...');
 
-  // Update inventory locally
-  for (var k in quantities) {
-    if ((quantities[k] || 0) > 0) {
-      if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
-      inventory[k].stock = Math.max(0, inventory[k].stock - quantities[k]);
-    }
-  }
-
-  // Save to Sheets - כולל כמויות כדי שה-Apps Script יוריד מלאי
+  // Save to Sheets - Apps Script handles inventory deduction
   var orderedQty = {};
   for (var k in quantities) {
     if ((quantities[k] || 0) > 0) orderedQty[k] = quantities[k];
   }
   saveOrderToSheets({date:date, clientName:name, clientPhone:phone, clientAddress:address, clientEmail:email, items:itemsText, total:'₪'+total.toFixed(2), notes:notes, quantities:JSON.stringify(orderedQty)});
-  // Reload inventory from Sheets after 3 seconds to sync all devices
-  setTimeout(function() { loadInventoryFromSheets(); }, 3000);
+  // Reload inventory from Sheets after 4 seconds to show updated stock
+  setTimeout(function() { loadInventoryFromSheets(); }, 4000);
 
   // Send email (skip in test mode)
   if (testMode) {
@@ -542,38 +522,7 @@ function saveOrderToSheets(o) {
   document.body.appendChild(scr);
 }
 
-function saveInventoryToSheets(onDone) {
-  var items = [];
-  Object.keys(inventory).forEach(function(k) {
-    if (!/^\d+-\d+$/.test(k)) return;
-    var parts = k.split('-');
-    var ci = parseInt(parts[0]), ii = parseInt(parts[1]);
-    if (!catalog[ci] || !catalog[ci].items[ii]) return;
-    var inv = inventory[k];
-    items.push({
-      productId: k,
-      name: catalog[ci].items[ii].n,
-      stock: inv.stock || 0,
-      minStock: inv.minStock || 5,
-      ordered: inv.ordered || 0
-    });
-  });
-  if (items.length === 0) { if (onDone) onDone(); return; }
-  var scr = document.createElement('script');
-  var cb = 'cb_si_' + Date.now();
-  window[cb] = function(r) {
-    delete window[cb];
-    if (document.body.contains(scr)) document.body.removeChild(scr);
-    if (onDone) onDone();
-  };
-  scr.onerror = function() {
-    delete window[cb];
-    if (document.body.contains(scr)) document.body.removeChild(scr);
-    if (onDone) onDone();
-  };
-  scr.src = GOOGLE_SCRIPT_URL + '?action=updateInventoryBulk&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(items));
-  document.body.appendChild(scr);
-}
+// saveInventoryToSheets removed - inventory is managed by Apps Script on order save
 
 function saveCatalogToSheets() {
   localStorage.removeItem('bakery_catalog');
@@ -743,11 +692,8 @@ function saveInventory() {
       }
     }
   }
-  showToast('שומר...');
-  saveInventoryToSheets(function() {
-    showToast('המלאי נשמר ✅');
-    buildOrderForm();
-  });
+  showToast('המלאי עודכן ✅');
+  buildOrderForm();
 }
 
 // =====================================================
@@ -913,7 +859,6 @@ function loadLogo() {
 
 function saveTexts() {
   var data = {
-    version: TEXTS_VERSION,
     title: document.getElementById('title-text').textContent,
     subtitle: document.getElementById('subtitle-text').textContent,
     about: document.getElementById('about-text').innerHTML,
@@ -924,7 +869,7 @@ function saveTexts() {
   saveTextsToSheets(data);
 }
 
-var TEXTS_VERSION = '20260222c';
+
 // =====================================================
 // 1. הגדרות גרסה - זה המפתח לעדכון אצל הלקוחות!
 // =====================================================
