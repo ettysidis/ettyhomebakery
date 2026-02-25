@@ -108,7 +108,7 @@ textarea { min-height: 80px; resize: vertical; }
 • מחכים לאישור – לאחר מילוי הטופס, אצור איתכם קשר באופן אישי לאישור ההזמנה והסדרת התשלום.
 • נהנים מהטעם – בשישי בבוקר המאפים כבר יהיו מוכנים עבורכם.
 
-לכל שאלה או התייעצות, אני זמינה עבורכם בטלפון או בווטסאפ: <a href="https://wa.me/9720544731775?text=%D7%94%D7%99%D7%99%20%D7%90%D7%AA%D7%99%2C%20%D7%99%D7%A9%20%D7%9C%D7%99%20%D7%A9%D7%90%D7%9C%D7%94%20%D7%9C%D7%92%D7%91%D7%99%20%D7%94%D7%9E%D7%9B%D7%99%D7%A8%D7%94%20%D7%91%D7%A9%D7%99%D7%A9%D7%99" style="color:#7c3f00;font-weight:700;text-decoration:none">054-4731775</a>
+לכל שאלה או התייעצות, אני זמינה עבורכם: <a href="https://wa.me/9720544731775?text=%D7%94%D7%99%D7%99%20%D7%90%D7%AA%D7%99%2C%20%D7%99%D7%A9%20%D7%9C%D7%99%20%D7%A9%D7%90%D7%9C%D7%94%20%D7%9C%D7%92%D7%91%D7%99%20%D7%94%D7%9E%D7%9B%D7%99%D7%A8%D7%94%20%D7%91%D7%A9%D7%99%D7%A9%D7%99" style="display:inline-flex;align-items:center;gap:5px;background:#25D366;color:#fff;font-weight:700;text-decoration:none;padding:5px 12px;border-radius:20px;font-size:0.85rem">&#x1F4AC; 054-4731775 בווטסאפ</a>
 
 אשמח לספק לכם מוצרים איכותיים ומפנקים לסוף השבוע! 🧡</span>
   </div>
@@ -136,6 +136,8 @@ textarea { min-height: 80px; resize: vertical; }
     <input type="text" id="client-address" placeholder="כתובת למשלוח*">
     <input type="email" id="client-email" placeholder="אימייל (אופציונלי)">
   </div>
+
+  <div id="order-summary" style="display:none;background:#fff8f0;border:1px solid #e8c97a;border-radius:12px;padding:14px 16px;margin-bottom:12px;font-size:0.95rem;line-height:2;direction:rtl;"></div>
 
   <div class="total-bar">
     <span class="total-label">סה"כ להזמנה</span>
@@ -329,15 +331,31 @@ function changeQty(k, delta) {
 
 function updateTotal() {
   var total = 0;
+  var summaryLines = [];
   for (var k in quantities) {
     var parts = k.split('-');
     var ci = parseInt(parts[0]), ii = parseInt(parts[1]);
     if (catalog[ci] && catalog[ci].items[ii]) {
-      total += (quantities[k] || 0) * catalog[ci].items[ii].p;
+      var qty = quantities[k] || 0;
+      if (qty > 0) {
+        var item = catalog[ci].items[ii];
+        var lineTotal = qty * item.p;
+        total += lineTotal;
+        summaryLines.push(item.n + ' &times;' + qty + ' = &#8362;' + lineTotal.toFixed(2));
+      }
     }
   }
   var el = document.getElementById('total-display');
   if (el) el.textContent = '₪' + total.toFixed(2);
+  var summary = document.getElementById('order-summary');
+  if (summary) {
+    if (summaryLines.length > 0) {
+      summary.innerHTML = '🛒 <strong>פירוט הזמנה:</strong><br>' + summaryLines.join('<br>');
+      summary.style.display = 'block';
+    } else {
+      summary.style.display = 'none';
+    }
+  }
 }
 
 function resetOrder() {
