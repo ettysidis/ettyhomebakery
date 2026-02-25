@@ -251,7 +251,26 @@ function init() {
 // LOAD CATALOG FROM SHEETS
 // =====================================================
 function loadCatalogFromSheets() {
-  // Always load from Sheets - no localStorage
+  // הצג מיד מ-localStorage אם קיים
+  var cached = localStorage.getItem('bakery_catalog');
+  if (cached) {
+    try {
+      catalog = JSON.parse(cached);
+      quantities = {};
+      for (var ci0 = 0; ci0 < catalog.length; ci0++) {
+        for (var ii0 = 0; ii0 < catalog[ci0].items.length; ii0++) {
+          quantities[ci0 + '-' + ii0] = 0;
+        }
+      }
+      // הצג מיד עם מלאי מ-localStorage
+      var cachedInv = localStorage.getItem('bakery_inventory');
+      if (cachedInv) {
+        try { inventory = JSON.parse(cachedInv); } catch(e) {}
+      }
+      buildOrderForm();
+    } catch(e) {}
+  }
+  // עדכן ברקע מ-Sheets
   var scr = document.createElement('script');
   var cb = 'cb_cat_load_' + Date.now();
   window[cb] = function(r) {
@@ -266,7 +285,6 @@ function loadCatalogFromSheets() {
           quantities[ci2 + '-' + ii2] = 0;
         }
       }
-      // אחרי שהקטלוג נטען, טען מלאי מ-Sheets ואז בנה את הטופס
       loadInventoryFromSheets();
     }
   };
@@ -506,6 +524,7 @@ function loadInventoryFromSheets() {
           inventory[k].stock = data[k].stock !== undefined ? parseInt(data[k].stock) : inventory[k].stock;
           inventory[k].minStock = data[k].minStock !== undefined ? parseInt(data[k].minStock) : inventory[k].minStock;
         });
+        localStorage.setItem('bakery_inventory', JSON.stringify(inventory));
         buildOrderForm();
       } else {
         // Sheets ריק - הצג טופס עם מלאי פתוח (50 יח׳ לכל מוצר)
