@@ -878,7 +878,7 @@ function saveTexts() {
   var data = {
     title: document.getElementById('title-text').textContent,
     subtitle: document.getElementById('subtitle-text').textContent,
-    about: document.getElementById('about-text').innerHTML,
+    about: document.getElementById('about-text').innerText,
     notes: document.getElementById('notes-text').innerHTML
   };
   // שמור גם ב-localStorage וגם ב-Sheets
@@ -900,7 +900,7 @@ function loadTexts() {
 function applyTexts(t) {
   if (t.title) document.getElementById('title-text').textContent = t.title;
   if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
-  if (t.about) document.getElementById('about-text').innerHTML = t.about;
+  if (t.about) document.getElementById('about-text').innerText = t.about;
   if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
 }
 
