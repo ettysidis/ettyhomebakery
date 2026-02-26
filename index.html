@@ -212,7 +212,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var APP_VERSION = '20260226a'; // שני את הגרסה בכל פעם שמעלים קובץ חדש
+var APP_VERSION = '20260226b'; // שני את הגרסה בכל פעם שמעלים קובץ חדש
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxafh43CmkGDhmGjyILHECCKI4h1ak_Emj1u9dxNxJipbxAW-CN7Tgr1tFxXIfyOCp0AA/exec';
 
 // =====================================================
@@ -969,7 +969,7 @@ function loadTexts() {
 function applyTexts(t) {
   if (t.title) document.getElementById('title-text').textContent = t.title;
   if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
-  if (t.about) document.getElementById('about-text').innerText = t.about;
+  if (t.about) document.getElementById('about-text').innerHTML = t.about.replace(/\n/g, '<br>');
   if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
 }
 
@@ -1019,16 +1019,26 @@ function saveTextsToSheets(data) {
 function toggleSale() {
   var overlay = document.getElementById('sale-closed-overlay');
   var btn = document.getElementById('toggle-sale-btn');
+  var adminDiv = document.getElementById('sale-closed-admin');
   var isClosed = overlay.style.display === 'flex';
   if (isClosed) {
     overlay.style.display = 'none';
-    btn.textContent = '🔴 סגור מכירה';
-    btn.style.background = '#7c3f00';
+    if (btn) { btn.textContent = '🔴 סגור מכירה'; btn.style.background = '#7c3f00'; }
     localStorage.removeItem('sale_closed');
   } else {
+    // סגור מכירה - אפס מצב מנהלת
+    if (adminMode) {
+      adminMode = false;
+      var adminBtn = document.getElementById('admin-btn');
+      if (adminBtn) { adminBtn.textContent = '🔒'; adminBtn.style.background = ''; adminBtn.style.color = ''; adminBtn.style.border = ''; }
+      ['title-text','subtitle-text','about-text','notes-text'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) { el.contentEditable = 'false'; el.style.background = ''; }
+      });
+    }
+    if (adminDiv) adminDiv.style.display = 'none';
     overlay.style.display = 'flex';
-    btn.textContent = '🟢 פתח מכירה';
-    btn.style.background = '#25a244';
+    if (btn) { btn.textContent = '🟢 פתח מכירה'; btn.style.background = '#25a244'; }
     localStorage.setItem('sale_closed', '1');
   }
 }
