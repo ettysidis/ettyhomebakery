@@ -208,6 +208,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
+var APP_VERSION = '20260226a'; // שני את הגרסה בכל פעם שמעלים קובץ חדש
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxafh43CmkGDhmGjyILHECCKI4h1ak_Emj1u9dxNxJipbxAW-CN7Tgr1tFxXIfyOCp0AA/exec';
 
 // =====================================================
@@ -247,6 +248,15 @@ var catalog = [
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
+  // בדוק גרסה - אם השתנה, נקה cache
+  var savedVersion = localStorage.getItem('app_version');
+  if (savedVersion !== APP_VERSION) {
+    var logo = localStorage.getItem('bakery_logo');
+    localStorage.clear();
+    if (logo) localStorage.setItem('bakery_logo', logo);
+    localStorage.setItem('app_version', APP_VERSION);
+  }
+
   // בדוק אם המכירה סגורה
   if (localStorage.getItem('sale_closed')) {
     var overlay = document.getElementById('sale-closed-overlay');
