@@ -166,6 +166,9 @@ textarea { min-height: 80px; resize: vertical; }
   <h2 style="color:#7c3f00;font-size:1.8rem;margin:16px 0">המכירה הסתיימה</h2>
   <p style="color:#5a3000;font-size:1.1rem">נתראה בפעם הבאה!</p>
   <button id="admin-btn-overlay" onclick="toggleAdmin()" style="position:fixed;top:12px;left:12px;background:transparent;border:none;font-size:1.4rem;cursor:pointer;opacity:0.4">🔒</button>
+  <div id="sale-closed-admin" style="display:none;margin-top:30px">
+    <button onclick="toggleSale()" style="background:#25a244;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit">🟢 פתח מכירה</button>
+  </div>
 </div>
 
 <!-- INVENTORY PAGE -->
@@ -644,6 +647,14 @@ function loadOrdersFromSheets() {
 // ADMIN
 // =====================================================
 function toggleAdmin() {
+  var adminDiv = document.getElementById('sale-closed-admin');
+  if (adminDiv && adminDiv.style.display === 'none') {
+    var pwd = prompt('סיסמת מנהלת:');
+    if (pwd !== 'etty2025') return;
+    adminDiv.style.display = 'block';
+    return;
+  }
+  if (adminDiv) adminDiv.style.display = 'none';
   if (!adminMode) {
     var pass = prompt('סיסמה:');
     if (pass !== 'etty2025') { showToast('סיסמה שגויה'); return; }
