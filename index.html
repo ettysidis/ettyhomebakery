@@ -761,6 +761,7 @@ function cleanInventoryDuplicates() {
 }
 
 function saveInventory() {
+  var items = [];
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
       var k = ci + '-' + ii;
@@ -770,9 +771,27 @@ function saveInventory() {
         if (!inventory[k]) inventory[k] = {};
         inventory[k].stock = parseInt(sEl.value) || 0;
         inventory[k].minStock = parseInt(mEl.value) || 5;
+        // עדכן שם לפי קטלוג
+        items.push({
+          productId: k,
+          name: catalog[ci].items[ii].n,
+          stock: inventory[k].stock,
+          minStock: inventory[k].minStock,
+          ordered: inventory[k].ordered || 0
+        });
       }
     }
   }
+  // שמור לשיטס עם שמות מעודכנים
+  if (items.length > 0) {
+    var scr = document.createElement('script');
+    var cb = 'cb_sav_inv_' + Date.now();
+    window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+    scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+    scr.src = GOOGLE_SCRIPT_URL + '?action=updateInventoryBulk&t=' + Date.now() + '&callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(items));
+    document.body.appendChild(scr);
+  }
+  localStorage.setItem('bakery_inventory', JSON.stringify(inventory));
   showToast('המלאי עודכן ✅');
   buildOrderForm();
 }
