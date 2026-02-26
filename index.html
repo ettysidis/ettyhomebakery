@@ -212,7 +212,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var APP_VERSION = '20260226c'; // שני את הגרסה בכל פעם שמעלים קובץ חדש
+var APP_VERSION = '20260226e'; // שני את הגרסה בכל פעם שמעלים קובץ חדש
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxafh43CmkGDhmGjyILHECCKI4h1ak_Emj1u9dxNxJipbxAW-CN7Tgr1tFxXIfyOCp0AA/exec';
 
 // =====================================================
@@ -916,14 +916,29 @@ function saveCatalogEdits() {
   }
   showToast('שומר...');
   saveCatalogToSheets();
-  // Re-init quantities and inventory for any new products
-  for (var ci = 0; ci < catalog.length; ci++) {
-    for (var ii = 0; ii < catalog[ci].items.length; ii++) {
-      var k = ci + '-' + ii;
+  // סנכרן Inventory עם מוצרים חדשים/שמות מעודכנים
+  var items = [];
+  for (var ci2 = 0; ci2 < catalog.length; ci2++) {
+    for (var ii2 = 0; ii2 < catalog[ci2].items.length; ii2++) {
+      var k = ci2 + '-' + ii2;
       if (quantities[k] === undefined) quantities[k] = 0;
-      if (!inventory[k]) inventory[k] = {stock: 20, minStock: 5};
+      if (!inventory[k]) inventory[k] = {stock: 0, minStock: 5, ordered: 0};
+      items.push({
+        productId: k,
+        name: catalog[ci2].items[ii2].n,
+        stock: inventory[k].stock || 0,
+        minStock: inventory[k].minStock || 5,
+        ordered: inventory[k].ordered || 0
+      });
     }
   }
+  // שמור לשיטס עם שמות מעודכנים
+  var scr2 = document.createElement('script');
+  var cb2 = 'cb_sync_inv_' + Date.now();
+  window[cb2] = function() { delete window[cb2]; if (document.body.contains(scr2)) document.body.removeChild(scr2); showToast('קטלוג ומלאי עודכנו ✅'); };
+  scr2.onerror = function() { delete window[cb2]; if (document.body.contains(scr2)) document.body.removeChild(scr2); };
+  scr2.src = GOOGLE_SCRIPT_URL + '?action=updateInventoryBulk&t=' + Date.now() + '&callback=' + cb2 + '&data=' + encodeURIComponent(JSON.stringify(items));
+  document.body.appendChild(scr2);
   buildOrderForm();
 }
 
