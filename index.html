@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -163,12 +160,20 @@ textarea { min-height: 80px; resize: vertical; }
   <button class="btn btn-primary" onclick="submitOrder()">📧 שלח הזמנה</button>
 </div>
 
+<!-- SALE CLOSED OVERLAY -->
+<div id="sale-closed-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,248,238,0.97);z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:4rem">🧡</div>
+  <h2 style="color:#7c3f00;font-size:1.8rem;margin:16px 0">המכירה הסתיימה</h2>
+  <p style="color:#5a3000;font-size:1.1rem">נתראה בפעם הבאה!</p>
+</div>
+
 <!-- INVENTORY PAGE -->
 <div class="page" id="page-inventory">
   <div style="padding-top:16px">
     <div class="section">
       <h3>📦 ניהול מלאי</h3>
       <div id="inv-grid"></div>
+      <button class="save-btn" onclick="toggleSale()" id="toggle-sale-btn" style="background:#7c3f00;margin-bottom:8px">🔴 סגור מכירה</button>
       <button class="save-btn" onclick="saveInventory()">💾 שמור מלאי</button>
       <button class="save-btn" onclick="cleanInventoryDuplicates()" style="background:#e67e22;margin-top:8px">🧹 נקה כפילויות מ-Sheets</button>
       <button class="save-btn" onclick="if(confirm('לאפס את כל הזיכרון המקומי?')){var logo=localStorage.getItem('bakery_logo');localStorage.clear();if(logo)localStorage.setItem('bakery_logo',logo);location.reload();}" style="background:#d32f2f;margin-top:8px">🔄 איפוס זיכרון מלא</button>
@@ -242,6 +247,13 @@ var catalog = [
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 function init() {
+  // בדוק אם המכירה סגורה
+  if (localStorage.getItem('sale_closed')) {
+    var overlay = document.getElementById('sale-closed-overlay');
+    if (overlay) overlay.style.display = 'flex';
+    var btn = document.getElementById('toggle-sale-btn');
+    if (btn) { btn.textContent = '🟢 פתח מכירה'; btn.style.background = '#25a244'; }
+  }
   // אתחל כמויות בלבד - המלאי יגיע מ-Sheets
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
@@ -977,6 +989,23 @@ function saveTextsToSheets(data) {
 // =====================================================
 // TOAST
 // =====================================================
+function toggleSale() {
+  var overlay = document.getElementById('sale-closed-overlay');
+  var btn = document.getElementById('toggle-sale-btn');
+  var isClosed = overlay.style.display === 'flex';
+  if (isClosed) {
+    overlay.style.display = 'none';
+    btn.textContent = '🔴 סגור מכירה';
+    btn.style.background = '#7c3f00';
+    localStorage.removeItem('sale_closed');
+  } else {
+    overlay.style.display = 'flex';
+    btn.textContent = '🟢 פתח מכירה';
+    btn.style.background = '#25a244';
+    localStorage.setItem('sale_closed', '1');
+  }
+}
+
 function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
