@@ -647,14 +647,19 @@ function loadOrdersFromSheets() {
 // ADMIN
 // =====================================================
 function toggleAdmin() {
+  var overlay = document.getElementById('sale-closed-overlay');
   var adminDiv = document.getElementById('sale-closed-admin');
-  if (adminDiv && adminDiv.style.display === 'none') {
-    var pwd = prompt('סיסמת מנהלת:');
-    if (pwd !== 'etty2025') return;
-    adminDiv.style.display = 'block';
+  // אם ה-overlay פעיל - טפל בו בנפרד
+  if (overlay && overlay.style.display === 'flex') {
+    if (adminDiv && adminDiv.style.display !== 'block') {
+      var pwd = prompt('סיסמת מנהלת:');
+      if (pwd !== 'etty2025') return;
+      adminDiv.style.display = 'block';
+    } else if (adminDiv) {
+      adminDiv.style.display = 'none';
+    }
     return;
   }
-  if (adminDiv) adminDiv.style.display = 'none';
   if (!adminMode) {
     var pass = prompt('סיסמה:');
     if (pass !== 'etty2025') { showToast('סיסמה שגויה'); return; }
