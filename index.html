@@ -212,7 +212,7 @@ textarea { min-height: 80px; resize: vertical; }
 var EMAILJS_PUBLIC_KEY = 'VL9oxSL1t71Mvequg';
 var EMAILJS_SERVICE_ID = 'service_s89hazp';
 var EMAILJS_TEMPLATE_ID = 'template_giuoi6r';
-var APP_VERSION = '20260226b'; // שני את הגרסה בכל פעם שמעלים קובץ חדש
+var APP_VERSION = '20260226c'; // שני את הגרסה בכל פעם שמעלים קובץ חדש
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxafh43CmkGDhmGjyILHECCKI4h1ak_Emj1u9dxNxJipbxAW-CN7Tgr1tFxXIfyOCp0AA/exec';
 
 // =====================================================
@@ -261,13 +261,8 @@ function init() {
     localStorage.setItem('app_version', APP_VERSION);
   }
 
-  // בדוק אם המכירה סגורה
-  if (localStorage.getItem('sale_closed')) {
-    var overlay = document.getElementById('sale-closed-overlay');
-    if (overlay) overlay.style.display = 'flex';
-    var btn = document.getElementById('toggle-sale-btn');
-    if (btn) { btn.textContent = '🟢 פתח מכירה'; btn.style.background = '#25a244'; }
-  }
+  // בדוק אם המכירה סגורה מהשיטס
+  checkSaleStatus();
   // אתחל כמויות בלבד - המלאי יגיע מ-Sheets
   for (var ci = 0; ci < catalog.length; ci++) {
     for (var ii = 0; ii < catalog[ci].items.length; ii++) {
@@ -947,7 +942,7 @@ function saveTexts() {
   var data = {
     title: document.getElementById('title-text').textContent,
     subtitle: document.getElementById('subtitle-text').textContent,
-    about: document.getElementById('about-text').innerText,
+    about: document.getElementById('about-text').innerText.replace(/<br>/g, '\n'),
     notes: document.getElementById('notes-text').innerHTML
   };
   // שמור גם ב-localStorage וגם ב-Sheets
@@ -969,7 +964,7 @@ function loadTexts() {
 function applyTexts(t) {
   if (t.title) document.getElementById('title-text').textContent = t.title;
   if (t.subtitle) document.getElementById('subtitle-text').textContent = t.subtitle;
-  if (t.about) document.getElementById('about-text').innerHTML = t.about.replace(/\n/g, '<br>');
+  if (t.about) document.getElementById('about-text').innerHTML = t.about.replace(/<br>/g, '\n').replace(/\n/g, '<br>');
   if (t.notes) document.getElementById('notes-text').innerHTML = t.notes;
 }
 
@@ -1022,11 +1017,13 @@ function toggleSale() {
   var adminDiv = document.getElementById('sale-closed-admin');
   var isClosed = overlay.style.display === 'flex';
   if (isClosed) {
+    // פתח מכירה - שמור בשיטס
+    saveSaleStatus('open');
     overlay.style.display = 'none';
     if (btn) { btn.textContent = '🔴 סגור מכירה'; btn.style.background = '#7c3f00'; }
-    localStorage.removeItem('sale_closed');
   } else {
-    // סגור מכירה - אפס מצב מנהלת
+    // סגור מכירה - אפס מצב מנהלת ושמור בשיטס
+    saveSaleStatus('closed');
     if (adminMode) {
       adminMode = false;
       var adminBtn = document.getElementById('admin-btn');
@@ -1039,8 +1036,34 @@ function toggleSale() {
     if (adminDiv) adminDiv.style.display = 'none';
     overlay.style.display = 'flex';
     if (btn) { btn.textContent = '🟢 פתח מכירה'; btn.style.background = '#25a244'; }
-    localStorage.setItem('sale_closed', '1');
   }
+}
+
+function saveSaleStatus(status) {
+  var scr = document.createElement('script');
+  var cb = 'cb_sale_' + Date.now();
+  window[cb] = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+  scr.src = GOOGLE_SCRIPT_URL + '?action=saveSaleStatus&status=' + status + '&t=' + Date.now() + '&callback=' + cb;
+  document.body.appendChild(scr);
+}
+
+function checkSaleStatus() {
+  var scr = document.createElement('script');
+  var cb = 'cb_salecheck_' + Date.now();
+  window[cb] = function(r) {
+    delete window[cb];
+    if (document.body.contains(scr)) document.body.removeChild(scr);
+    if (r && r.data === 'closed') {
+      var overlay = document.getElementById('sale-closed-overlay');
+      var btn = document.getElementById('toggle-sale-btn');
+      if (overlay) overlay.style.display = 'flex';
+      if (btn) { btn.textContent = '🟢 פתח מכירה'; btn.style.background = '#25a244'; }
+    }
+  };
+  scr.onerror = function() { delete window[cb]; if (document.body.contains(scr)) document.body.removeChild(scr); };
+  scr.src = GOOGLE_SCRIPT_URL + '?action=getSaleStatus&t=' + Date.now() + '&callback=' + cb;
+  document.body.appendChild(scr);
 }
 
 function showToast(msg) {
