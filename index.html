@@ -398,16 +398,17 @@ function buildRow(ci, ii) {
   r.className = 'row';
   r.id = 'row-' + k;
   r.innerHTML =
-    '<div>' +
-    (item.img ? '<img src="' + item.img + '" style="width:100%;border-radius:10px;margin-bottom:8px;object-fit:contain;max-height:220px;">' : '') +
-      '<div class="iname">' + item.n + (outOfStock ? ' <span class="out-badge">אזל המלאי</span>' : '') + '</div>' +
-      (item.d ? '<div class="idesc">' + item.d + '</div>' : '') +
-    '</div>' +
-    '<div class="price">₪' + item.p + '<br><small style="font-weight:400;font-size:.7rem;color:#a0673a">' + (item.u || 'ליחידה') + '</small></div>' +
-    '<div class="qty-box">' +
-      '<button class="qty-btn" onclick="changeQty(\'' + k + '\',-1)"' + (outOfStock ? ' disabled' : '') + '>−</button>' +
-      '<span class="qty-num" id="qty-' + k + '">' + (quantities[k] || 0) + '</span>' +
-      '<button class="qty-btn" onclick="changeQty(\'' + k + '\',1)"' + (outOfStock ? ' disabled' : '') + '>+</button>' +
+   r.innerHTML =
+  '<div style="display:flex;flex-direction:column;align-items:flex-end;">' +
+    (item.img ? '<img src="' + item.img + '" style="width:100%;border-radius:10px;margin-bottom:6px;object-fit:cover;max-height:180px;">' : '') +
+    '<div class="iname">' + item.n + (outOfStock ? ' <span class="out-badge">אזל מהמלאי</span>' : '') + '</div>' +
+    (item.d ? '<div class="idesc">' + item.d + '</div>' : '') +
+  '</div>' +
+  '<div class="price">₪' + item.p + '<br><small style="font-weight:400;font-size:.7rem;color:#a0673a">' + (item.u || 'ליחידה') + '</small></div>' +
+  '<div class="qty-box">' +
+    '<button class="qty-btn" onclick="changeQty(\'' + k + '\',-1)"' + (outOfStock ? ' disabled' : '') + '>-</button>' +
+    '<span class="qty-num" id="qty-' + k + '">' + (quantities[k] || 0) + '</span>' +
+    '<button class="qty-btn" onclick="changeQty(\'' + k + '\',1)"' + (outOfStock ? ' disabled' : '') + '>+</button>' +
     '</div>';
   return r;
 }
