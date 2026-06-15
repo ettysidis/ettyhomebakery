@@ -399,7 +399,7 @@ function buildRow(ci, ii) {
   r.id = 'row-' + k;
   r.innerHTML =
     '<div>' +
-    (item.img ? '<img src="' + item.img + '" style="width:100%;border-radius:30px;margin-bottom:8px;object-fit:contain;max-height:220px;">' : '') +
+    (item.img ? '<img src="' + item.img + '" style="width:100%;border-radius:30px;overflow:hidden;margin-bottom:8px;object-fit:contain;max-height:220px;">' : '') +
       '<div class="iname">' + item.n + (outOfStock ? ' <span class="out-badge">אזל המלאי</span>' : '') + '</div>' +
       (item.d ? '<div class="idesc">' + item.d + '</div>' : '') +
     '</div>' +
